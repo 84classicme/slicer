@@ -36,6 +36,7 @@ public class Endpoint implements Writeable {
     public String toImpl(){
         StringBuilder sb = new StringBuilder();
         sb.append(this.buildAnnotation());
+        if (this.responseCode != null) sb.append(this.buildResponseCode());
         sb.append(this.buildMethodSignature());
         return sb.toString();
     }
@@ -43,7 +44,7 @@ public class Endpoint implements Writeable {
     private String buildAnnotation(){
         StringBuilder sb = new StringBuilder();
         sb.append("    ");
-        switch (this.getMethod()){
+        switch (this.method){
             case("GET"):
                 sb.append("@GetMapping");
                 break;
@@ -54,7 +55,7 @@ public class Endpoint implements Writeable {
                 sb.append("@PutMapping");
                 break;
             case("DELETE"):
-                sb.append("@PostMapping");
+                sb.append("@DeleteMapping");
                 break;
         }
         sb.append("(\"");
@@ -63,19 +64,33 @@ public class Endpoint implements Writeable {
         return sb.toString();
     }
 
+    private String buildResponseCode(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("    @ResponseStatus(");
+        switch (this.responseCode) {
+            case ("200"):
+                sb.append("HttpStatus.OK");
+                break;
+            case ("202"):
+                sb.append("HttpStatus.CREATED");
+                break;
+        }
+        sb.append(")\n");
+        return sb.toString();
+    }
+
     private String buildMethodSignature(){
         StringBuilder sb = new StringBuilder();
         sb.append("    ");
         sb.append("public ResponseEntity<");
-        sb.append(this.getResponseType());
+        sb.append(this.responseType);
         sb.append("> ");
-        sb.append(this.getName());
+        sb.append(this.name);
         sb.append("(");
         if(this.getRequestBody() !=null) sb.append(this.buildRequestBody());
         sb.append(this.buildRequestParams());
         sb.append(this.buildPathVariables());
         sb.replace(sb.lastIndexOf(", "), sb.length()-1, ") {\n");
-        //sb.append(") {\n");
         sb.append("        return null;\n");
         sb.append("    }");
         return sb.toString();

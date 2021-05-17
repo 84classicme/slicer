@@ -38,7 +38,7 @@
                         <PathVariable name="region" type="String"/>
                     </PathVariables>
                     <ResponseCode>200</ResponseCode>
-                    <ResponseType>slicer.Repository</ResponseType>
+                    <ResponseType>slicer.Slice</ResponseType>
                 </Endpoint>
                 <Endpoint name="getAccounts" method="GET" uri="/accounts/search">
                     <RequestParams>
@@ -46,7 +46,7 @@
                         <RequestParam name="state" type="String"/>
                     </RequestParams>
                     <ResponseCode>200</ResponseCode>
-                    <ResponseType>slicer.Repository</ResponseType>
+                    <ResponseType>slicer.Slice</ResponseType>
                 </Endpoint>
                 <Endpoint name="editAccount" method="PUT" uri="/accounts/{region}/{department}">
                     <PathVariables>

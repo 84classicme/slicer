@@ -22,6 +22,7 @@ public class Controller implements Writeable {
         StringBuilder sb = new StringBuilder();
         sb.append("package slicer.generated;\n\n");
         sb.append("import org.springframework.web.bind.annotation.*;\n");
+        sb.append("import org.springframework.http.*;\n");
         sb.append("import org.springframework.beans.factory.annotation.Autowired;\n");
         sb.append("\n");
         sb.append(buildController(this.name));
