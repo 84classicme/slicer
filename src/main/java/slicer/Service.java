@@ -8,9 +8,12 @@ import java.util.List;
 
 @Data // provides @ToString, @EqualsAndHashCode, @Getter, @Setter, and @RequiredArgsConstructor
 @NoArgsConstructor
-public class Service implements Generatable {
+public class Service implements Writeable {
     @JacksonXmlProperty(isAttribute = true)
     private String name;
+
+    @JacksonXmlProperty(localName = "Services")
+    private List<Service> services;
 
     @JacksonXmlProperty(localName = "Repositories")
     private List<Repository> repositories;
@@ -19,22 +22,17 @@ public class Service implements Generatable {
         StringBuilder sb = new StringBuilder();
         sb.append("package slicer.generated;\n\n");
         sb.append("import org.springframework.stereotype.Service;\n");
-        sb.append("import org.springframework.beans.factory.annotation.Autowired;\n");
+        if(services != null || repositories != null){
+            sb.append("import org.springframework.beans.factory.annotation.Autowired;\n");
+        }
         sb.append("\n");
         sb.append("@Service\n");
         sb.append("public class ");
         sb.append(name);
         sb.append(" {\n");
         sb.append("\n");
-        repositories.forEach(r -> {
-            sb.append("    ");
-            sb.append("@Autowired\n");
-            sb.append("    ");
-            sb.append(r.getName());
-            sb.append(" ");
-            sb.append(r.getName().substring(0, 1).toLowerCase() + r.getName().substring(1));
-            sb.append(";\n\n");
-        });
+        if(services != null) this.services.forEach(s -> sb.append(SlicerUtils.buildAutowired(s.getName())));
+        if(repositories != null) this.repositories.forEach(r -> sb.append(SlicerUtils.buildAutowired(r.getName())));
         sb.append("}");
         return sb.toString();
     }

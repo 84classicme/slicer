@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Data // provides @ToString, @EqualsAndHashCode, @Getter, @Setter, and @RequiredArgsConstructor
 @NoArgsConstructor
-public class Repository implements Generatable {
+public class Repository implements Writeable {
     @JacksonXmlProperty(isAttribute = true)
     private String name;
 

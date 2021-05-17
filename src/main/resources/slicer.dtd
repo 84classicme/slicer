@@ -6,7 +6,7 @@
         <!ELEMENT Controller (Services, Endpoints)>
         <!ATTLIST Controller name CDATA>
         <!ELEMENT Services (Service*)>
-        <!ELEMENT Service (Repositories)>
+        <!ELEMENT Service (Services, Repositories)>
         <!ATTLIST Service name CDATA>
         <!ELEMENT Repositories (Repository)>
         <!ELEMENT Repository (#PCDATA)>

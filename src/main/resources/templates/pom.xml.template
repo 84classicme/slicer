@@ -33,14 +33,9 @@
         </dependency>
 
         <!-- Data -->
-        %%DATABASE_DRIVER_DEPENDENCY%%
+        <!-- %%DATABASE_DRIVER_DEPENDENCY%% -->
 
         <!-- Utils -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-            <version>2.11.1</version>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

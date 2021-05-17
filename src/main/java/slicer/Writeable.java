@@ -1,5 +1,5 @@
 package slicer;
 
-public interface Generatable {
+public interface Writeable {
     String toImpl();
 }

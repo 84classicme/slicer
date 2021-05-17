@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data // provides @ToString, @EqualsAndHashCode, @Getter, @Setter, and @RequiredArgsConstructor
 @NoArgsConstructor
-public class Endpoint implements Generatable{
+public class Endpoint implements Writeable {
     @JacksonXmlProperty(isAttribute = true)
     private String method;
 
@@ -120,7 +120,4 @@ public class Endpoint implements Generatable{
         }
         return sb.toString();
     }
-
-
-
 }

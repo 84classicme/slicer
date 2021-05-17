@@ -1,23 +1,34 @@
 <Slice>
-    <Name>SliceName</Name>
+    <Name>SlicerTestOne</Name>
     <Controllers>
         <Controller name="AccountController">
             <Services>
                 <Service name="AccountService">
+                    <Services>
+                        <Service name="Validator"/>
+                        <Service name="EventTracker"/>
+                    </Services>
                     <Repositories>
                         <Repository name="AccountRepository"/>
-                        <Repository name="RepositoryTwo"/>
                     </Repositories>
                 </Service>
                 <Service name="OnboardingService">
+                    <Services>
+                        <Service name="Validator"/>
+                        <Service name="Emailer"/>
+                    </Services>
                     <Repositories>
                         <Repository name="OnboardingRepository"/>
-                        <Repository name="RepositoryFour"/>
                     </Repositories>
                 </Service>
             </Services>
             <Endpoints>
-                <Endpoint name="getAccount" method="GET" uri="/accounts">
+                <Endpoint name="createAccount" method="POST" uri="/accounts">
+                    <RequestBody name="slice" type="slicer.Slice"/>
+                    <ResponseCode>202</ResponseCode>
+                    <ResponseType>slicer.Slice</ResponseType>
+                </Endpoint>
+                <Endpoint name="getAccount" method="GET" uri="/accounts/{region}/{department}">
                     <RequestParams>
                         <RequestParam name="name" type="String"/>
                         <RequestParam name="ssn" type="String"/>
@@ -29,9 +40,21 @@
                     <ResponseCode>200</ResponseCode>
                     <ResponseType>slicer.Repository</ResponseType>
                 </Endpoint>
-                <Endpoint name="createAccount" method="POST" uri="/accounts">
+                <Endpoint name="getAccounts" method="GET" uri="/accounts/search">
+                    <RequestParams>
+                        <RequestParam name="lastname" type="String"/>
+                        <RequestParam name="state" type="String"/>
+                    </RequestParams>
+                    <ResponseCode>200</ResponseCode>
+                    <ResponseType>slicer.Repository</ResponseType>
+                </Endpoint>
+                <Endpoint name="editAccount" method="PUT" uri="/accounts/{region}/{department}">
+                    <PathVariables>
+                        <PathVariable name="department" type="String"/>
+                        <PathVariable name="region" type="String"/>
+                    </PathVariables>
                     <RequestBody name="slice" type="slicer.Slice"/>
-                    <ResponseCode>202</ResponseCode>
+                    <ResponseCode>200</ResponseCode>
                     <ResponseType>slicer.Slice</ResponseType>
                 </Endpoint>
             </Endpoints>
