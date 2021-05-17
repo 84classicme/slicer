@@ -12,7 +12,7 @@ public class Repository implements Generatable {
 
     public String toImpl(){
         StringBuilder sb = new StringBuilder();
-        sb.append("\n");
+        sb.append("package slicer.generated;\n\n");
         sb.append("import org.springframework.stereotype.Repository;\n");
         sb.append("import org.springframework.data.r2dbc.repository.R2dbcRepository;\n\n");
         sb.append("@Repository\n");

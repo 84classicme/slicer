@@ -24,7 +24,7 @@ public class SlicerService {
     }
 
     private void implToFile(Generatable g, String name) {
-        try (FileWriter fileWriter = new FileWriter("src/test/resources/generated/" + name + ".java")) {
+        try (FileWriter fileWriter = new FileWriter("src/main/java/slicer/generated/" + name + ".java")) {
             fileWriter.write(g.toImpl());
         } catch (Exception e){
             System.err.println("EXCEPTION: " + e.getMessage());

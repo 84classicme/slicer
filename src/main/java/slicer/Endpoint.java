@@ -66,14 +66,17 @@ public class Endpoint implements Generatable{
     private String buildMethodSignature(){
         StringBuilder sb = new StringBuilder();
         sb.append("    ");
-        sb.append("public ResponseEntity<> ");
+        sb.append("public ResponseEntity<");
+        sb.append(this.getResponseType());
+        sb.append("> ");
         sb.append(this.getName());
         sb.append("(");
         if(this.getRequestBody() !=null) sb.append(this.buildRequestBody());
         sb.append(this.buildRequestParams());
         sb.append(this.buildPathVariables());
-        sb.delete(sb.lastIndexOf(", "), sb.length()-1);
-        sb.append(") {\n");
+        sb.replace(sb.lastIndexOf(", "), sb.length()-1, ") {\n");
+        //sb.append(") {\n");
+        sb.append("        return null;\n");
         sb.append("    }");
         return sb.toString();
     }

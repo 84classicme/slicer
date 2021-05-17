@@ -17,6 +17,7 @@ public class Service implements Generatable {
 
     public String toImpl(){
         StringBuilder sb = new StringBuilder();
+        sb.append("package slicer.generated;\n\n");
         sb.append("import org.springframework.stereotype.Service;\n");
         sb.append("import org.springframework.beans.factory.annotation.Autowired;\n");
         sb.append("\n");
@@ -29,10 +30,10 @@ public class Service implements Generatable {
             sb.append("    ");
             sb.append("@Autowired\n");
             sb.append("    ");
-            sb.append(r.getClass());
-            sb.append(" ");
             sb.append(r.getName());
-            sb.append("\n\n");
+            sb.append(" ");
+            sb.append(r.getName().substring(0, 1).toLowerCase() + r.getName().substring(1));
+            sb.append(";\n\n");
         });
         sb.append("}");
         return sb.toString();

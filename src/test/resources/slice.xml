@@ -27,12 +27,12 @@
                         <PathVariable name="region" type="String"/>
                     </PathVariables>
                     <ResponseCode>200</ResponseCode>
-                    <ResponseType>Account</ResponseType>
+                    <ResponseType>slicer.Repository</ResponseType>
                 </Endpoint>
                 <Endpoint name="createAccount" method="POST" uri="/accounts">
-                    <RequestBody name="account" type="Account"/>
+                    <RequestBody name="slice" type="slicer.Slice"/>
                     <ResponseCode>202</ResponseCode>
-                    <ResponseType>EndpointTwoResponseType</ResponseType>
+                    <ResponseType>slicer.Slice</ResponseType>
                 </Endpoint>
             </Endpoints>
         </Controller>
