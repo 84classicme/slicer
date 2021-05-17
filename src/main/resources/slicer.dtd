@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE Slice [
+        <!ELEMENT Slice (Name, Controllers)>
+        <!ELEMENT Name (#PCDATA)>
+        <!ELEMENT Controllers (Controller)>
+        <!ELEMENT Controller (Services, Endpoints)>
+        <!ATTLIST Controller name CDATA>
+        <!ELEMENT Services (Service*)>
+        <!ELEMENT Service (Repositories)>
+        <!ATTLIST Service name CDATA>
+        <!ELEMENT Repositories (Repository)>
+        <!ELEMENT Repository (#PCDATA)>
+        <!ATTLIST Repository name CDATA>
+        <!ELEMENT Endpoints (Endpoint)>
+        <!ELEMENT Endpoint (RequestParams , PathVariables, RequestBody, ResponseCode, ResponseType)>
+        <!ATTLIST Endpoint
+                name CDATA
+                uri CDATA "/"
+                method(GET | POST | PUT | DELETE) "GET">
+        <!ELEMENT Type (#PCDATA)>
+        <!ELEMENT RequestParams (RequestParam)>
+        <!ELEMENT RequestParam (Name, Type)>
+        <!ELEMENT PathVariables (PathVariable)>
+        <!ELEMENT PathVariable (Name, Type)>
+        <!ELEMENT RequestBody (Name, Type)>
+        <!ELEMENT ResponseCode (#PCDATA)>
+        <!ELEMENT ResponseType (#PCDATA)>
+]>

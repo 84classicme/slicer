@@ -1,0 +1,41 @@
+<Slice>
+    <Name>SliceName</Name>
+    <Controllers>
+        <Controller name="AccountController">
+            <Services>
+                <Service name="AccountService">
+                    <Repositories>
+                        <Repository name="AccountRepository"/>
+                        <Repository name="RepositoryTwo"/>
+                    </Repositories>
+                </Service>
+                <Service name="OnboardingService">
+                    <Repositories>
+                        <Repository name="OnboardingRepository"/>
+                        <Repository name="RepositoryFour"/>
+                    </Repositories>
+                </Service>
+            </Services>
+            <Endpoints>
+                <Endpoint name="getAccount" method="GET" uri="/accounts">
+                    <RequestParams>
+                        <RequestParam name="name" type="String"/>
+                        <RequestParam name="ssn" type="String"/>
+                    </RequestParams>
+                    <PathVariables>
+                        <PathVariable name="department" type="String"/>
+                        <PathVariable name="region" type="String"/>
+                    </PathVariables>
+                    <ResponseCode>200</ResponseCode>
+                    <ResponseType>Account</ResponseType>
+                </Endpoint>
+                <Endpoint name="createAccount" method="POST" uri="/accounts">
+                    <RequestBody name="account" type="Account"/>
+                    <ResponseCode>202</ResponseCode>
+                    <ResponseType>EndpointTwoResponseType</ResponseType>
+                </Endpoint>
+            </Endpoints>
+        </Controller>
+    </Controllers>
+</Slice>
+
