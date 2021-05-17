@@ -3,12 +3,14 @@ package slicer;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class SlicerService {
@@ -22,6 +24,8 @@ public class SlicerService {
         destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "resources","application.yaml");
         files.add(copyFile(sourcePath, destinationPath));
         System.out.println("Number of files created: " + files.size());
+        zipFiles();
+        System.out.println("Files zipped!");
     }
 
     private ArrayList<File> createSourceFiles(Slice slice){
@@ -63,6 +67,39 @@ public class SlicerService {
             e.printStackTrace();
         }
         return files;
+    }
+
+    public void zipFiles(){
+        Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "slicer.zip");
+        Path mysourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated");
+
+        try (FileOutputStream fos = new FileOutputStream(destinationPath.toString());
+             ZipOutputStream zos = new ZipOutputStream(fos)) {
+            Path sourcePath = Paths.get(mysourcePath.toString());
+            // using WalkFileTree to traverse directory
+            Files.walkFileTree(sourcePath, new SimpleFileVisitor<Path>(){
+                @Override
+                public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
+                    // it starts with the source folder so skipping that
+                    if(!sourcePath.equals(dir)){
+                        //System.out.println("DIR   " + dir);
+                        zos.putNextEntry(new ZipEntry(sourcePath.relativize(dir).toString() + "/"));
+                        zos.closeEntry();
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+                @Override
+                public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
+                    zos.putNextEntry(new ZipEntry(sourcePath.relativize(file).toString()));
+                    Files.copy(file, zos);
+                    zos.closeEntry();
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     private File copyFile(Path sourcePath, Path destinationPath){
