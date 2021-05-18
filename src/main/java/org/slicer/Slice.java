@@ -9,9 +9,18 @@ import java.util.List;
 @Data // provides @ToString, @EqualsAndHashCode, @Getter, @Setter, and @RequiredArgsConstructor
 @NoArgsConstructor
 public class Slice {
-    @JacksonXmlProperty(localName = "Name")
+    @JacksonXmlProperty(isAttribute = true)
     private String name;
+
+    @JacksonXmlProperty(isAttribute = true)
+    private String groupId;
+
+    @JacksonXmlProperty(isAttribute = true)
+    private String artifactId;
 
     @JacksonXmlProperty(localName = "Controllers")
     private List<Controller> controllers;
+
+    @JacksonXmlProperty(localName = "DataSource")
+    private DataSource datasource;
 }

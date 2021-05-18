@@ -1,5 +1,6 @@
-<Slice>
-    <Name>SlicerTestOne</Name>
+<?xml version = "1.0" encoding = "UTF-8" ?>
+<!DOCTYPE Slice SYSTEM "slicer.dtd">
+<Slice name="SlicerTestOne" groupId="io.slicer" artifactId="slicer-core">
     <Controllers>
         <Controller name="AccountController">
             <Services>
@@ -60,5 +61,13 @@
             </Endpoints>
         </Controller>
     </Controllers>
+    <DataSource type="h2">
+        <Port>1090</Port>
+        <Host>localhost</Host>
+        <Database>my_schema</Database>
+        <Url>localhost:1090</Url>
+        <Username>scott</Username>
+        <Password>tiger</Password>
+    </DataSource>
 </Slice>
 

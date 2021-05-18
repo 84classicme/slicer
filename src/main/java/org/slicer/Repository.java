@@ -10,15 +10,15 @@ public class Repository implements Writeable {
     @JacksonXmlProperty(isAttribute = true)
     private String name;
 
-    public String toImpl(String packagename){
+    public String toFile(String packagename){
         StringBuilder sb = new StringBuilder();
         sb.append(SlicerUtils.buildPackage(packagename));
         sb.append("import org.springframework.stereotype.Repository;\n");
-        sb.append("import org.springframework.data.r2dbc.repository.R2dbcRepository;\n\n");
+        sb.append("import org.springframework.data.repository.reactive.ReactiveCrudRepository;\n\n");
         sb.append("@Repository\n");
         sb.append("public interface ");
         sb.append(name);
-        sb.append(" extends R2dbcRepository<String, String> {\n\n");
+        sb.append(" extends ReactiveCrudRepository<String, String> {\n\n");
         sb.append("}");
         return sb.toString();
     }

@@ -29,7 +29,7 @@
             </dependency>
 
         <!-- Data -->
-        <!-- %%DATABASE_DRIVER_DEPENDENCY%% -->
+        %%DATABASE_DRIVER_DEPENDENCY%%
 
         <!-- Utils -->
         <dependency>

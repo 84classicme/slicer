@@ -1,5 +1,8 @@
 spring:
     datasource:
+        port: %%DATASOURCE_PORT%%
+        host: %%DATASOURCE_HOST%%
+        database: %%DATASOURCE_DATABASE_NAME%%
         url: %%DATASOURCE_URL%%
         username: %%DATASOURCE_USERNAME%%
         password: %%DATASOURCE_PASSWORD%%
@@ -8,9 +11,6 @@ app:
   api:
     title: Spring Boot APIs
     version: 1.0.0
-    description: %%APPLICATION_DESCRIPTION%%
     base-package: %%APPLICATION_CONTROLLER_FQDN%%
-    contact-name: %%APPLICATION_CONTACT_NAME%%
-    contact-email: %%APPLICATION_CONTACT_EMAIL%%
     swagger:
       enable: true

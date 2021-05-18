@@ -18,7 +18,7 @@ public class Service implements Writeable {
     @JacksonXmlProperty(localName = "Repositories")
     private List<Repository> repositories;
 
-    public String toImpl(String packagename){
+    public String toFile(String packagename){
         StringBuilder sb = new StringBuilder();
         sb.append(SlicerUtils.buildPackage(packagename));
         sb.append("import org.springframework.stereotype.Service;\n");

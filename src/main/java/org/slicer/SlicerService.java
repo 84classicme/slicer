@@ -8,6 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -17,8 +20,8 @@ public class SlicerService {
     public void serveSlice(Slice slice) {
         try {
             createSourceFiles(slice);
-            createPomFile();
-            createYamlFile();
+            createPomFile(slice);
+            createYamlFile(slice);
             zipFiles();
             // TODO: clean up the source files
         } catch (Exception e){
@@ -60,16 +63,42 @@ public class SlicerService {
         }
     }
 
-    private void createPomFile(){
+    private void createPomFile(Slice slice){
         Path sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "pom.xml.template");
         Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "pom.xml");
         copyFile(sourcePath, destinationPath);
+        fillTemplate(destinationPath, "%%GROUP_ID%%", slice.getGroupId());
+        fillTemplate(destinationPath, "%%ARTIFACT_ID%%", slice.getArtifactId());
+        if (slice.getDatasource() != null)
+            fillTemplate(destinationPath, "%%DATABASE_DRIVER_DEPENDENCY%%", slice.getDatasource().toString());
     }
 
-    private void createYamlFile(){
+    private void fillTemplate(Path path, String oldString, String newString){
+        final String newval = newString != null ? newString : "";
+        try {
+            Stream<String> lines = Files.lines(path);
+            List<String> replaced = lines.map(line -> line.replaceAll(oldString, newval)).collect(Collectors.toList());
+            Files.write(path, replaced);
+            lines.close();
+        } catch (IOException e) {
+            System.err.println("EXCEPTION: Cannot fill template for value " + oldString + ". Reason: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void createYamlFile(Slice slice){
         Path sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "application.yaml.template");
         Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "resources", "application.yaml");
         copyFile(sourcePath, destinationPath);
+        fillTemplate(destinationPath, "%%DATASOURCE_PORT%%", slice.getDatasource().getPort());
+        fillTemplate(destinationPath, "%%DATASOURCE_HOST%%", slice.getDatasource().getHost());
+        fillTemplate(destinationPath, "%%DATASOURCE_DATABASE_NAME%%", slice.getDatasource().getDatabase());
+        fillTemplate(destinationPath, "%%DATASOURCE_URL%%", slice.getDatasource().getUrl());
+        fillTemplate(destinationPath, "%%DATASOURCE_USERNAME%%", slice.getDatasource().getUsername());
+        fillTemplate(destinationPath, "%%DATASOURCE_PASSWORD%%", slice.getDatasource().getPassword());
+        fillTemplate(destinationPath, "%%APPLICATION_NAME%%", slice.getName());
+        String fqdn = slice.getName().toLowerCase() + "." + slice.getControllers().get(0).getName();
+        fillTemplate(destinationPath, "%%APPLICATION_CONTROLLER_FQDN%%", fqdn );
     }
 
     private void writeTestClassToFile(String packagename, String classname) {
@@ -89,7 +118,7 @@ public class SlicerService {
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "java", packagename.toLowerCase());
             File file = new File(path.toString() + "/" + classname + ".java");
-            writeFile(path, file, w.toImpl(packagename));
+            writeFile(path, file, w.toFile(packagename));
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write class file for "+ classname + ". Reason: " + e.getMessage());
             e.printStackTrace();
