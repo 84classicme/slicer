@@ -21,6 +21,7 @@ public class Controller implements Writeable {
     public String toFile(String packagename){
         StringBuilder sb = new StringBuilder();
         sb.append(SlicerUtils.buildPackage(packagename));
+        sb.append("import io.swagger.annotations.*;\n");
         sb.append("import org.springframework.web.bind.annotation.*;\n");
         sb.append("import org.springframework.http.*;\n");
         sb.append("import org.springframework.beans.factory.annotation.Autowired;\n");

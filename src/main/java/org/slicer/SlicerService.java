@@ -55,7 +55,7 @@ public class SlicerService {
         String name = packagename.substring(0, 1).toUpperCase() + packagename.substring(1);
         System.out.println("Writing application class file: " + name + "Application.java");
         try {
-            Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "java",  packagename.toLowerCase());
+            Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "java",  packagename.toLowerCase());
             File file = new File(path.toString() + "/" + name + "Application.java");
             writeFile(path, file, SlicerUtils.buildApplicationClass(name, packagename));
         } catch (Exception e){
@@ -66,12 +66,16 @@ public class SlicerService {
 
     private void createPomFile(Slice slice){
         Path sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "pom.xml.template");
-        Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "pom.xml");
+        Path destinationDir = FileSystems.getDefault().getPath("src", "main", "resources", "generated");
+        Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "pom.xml");
+        checkDirectory(destinationDir);
         copyFile(sourcePath, destinationPath);
         fillTemplate(destinationPath, "%%GROUP_ID%%", slice.getGroupId());
         fillTemplate(destinationPath, "%%ARTIFACT_ID%%", slice.getArtifactId());
+        fillTemplate(destinationPath, "%%DESCRIPTION%%", slice.getDescription());
         if (slice.getDatasource() != null)
-            fillTemplate(destinationPath, "%%DATABASE_DRIVER_DEPENDENCY%%", slice.getDatasource().toString());
+            fillTemplate(destinationPath, "%%SPRING_DATA_DEPENDENCY_MGMT%%", slice.getDatasource().getDependencyManager());
+            fillTemplate(destinationPath, "%%DATABASE_DRIVER_DEPENDENCY%%", slice.getDatasource().getDependencies());
     }
 
     private void fillTemplate(Path path, String oldString, String newString){
@@ -89,7 +93,9 @@ public class SlicerService {
 
     private void createYamlFile(Slice slice){
         Path sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "application.yaml.template");
-        Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "resources", "application.yaml");
+        Path destinationDir = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "resources");
+        Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "resources", "application.yaml");
+        checkDirectory(destinationDir);
         copyFile(sourcePath, destinationPath);
         fillTemplate(destinationPath, "%%DATASOURCE_PORT%%", slice.getDatasource().getPort());
         fillTemplate(destinationPath, "%%DATASOURCE_HOST%%", slice.getDatasource().getHost());
@@ -105,7 +111,7 @@ public class SlicerService {
     private void writeTestClassToFile(String packagename, String classname) {
         System.out.println("Writing test class file: " + classname + "Test.java");
         try {
-            Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "test", "java", packagename.toLowerCase());
+            Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "test", "java", packagename.toLowerCase());
             File file = new File(path.toString() + "/" + classname + "Test.java");
             writeFile(path, file, SlicerUtils.buildTestClass(classname, packagename.toLowerCase()));
         } catch (Exception e){
@@ -117,7 +123,7 @@ public class SlicerService {
     private void writeSourceClassToFile(String packagename, Writeable w, String classname) {
         System.out.println("Writing file: " + classname + ".java");
         try {
-            Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "java", packagename.toLowerCase());
+            Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "java", packagename.toLowerCase());
             File file = new File(path.toString() + "/" + classname + ".java");
             writeFile(path, file, w.toFile(packagename));
         } catch (Exception e){
@@ -140,7 +146,7 @@ public class SlicerService {
 
     public void zipFiles(){
         Path destinationPath = SlicerUtils.ZIP_LOCATION;
-        Path mysourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated");
+        Path mysourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "generated");
         try (FileOutputStream fos = new FileOutputStream(destinationPath.toString());
                     ZipOutputStream zos = new ZipOutputStream(fos)) {
             Path sourcePath = Paths.get(mysourcePath.toString());
@@ -162,7 +168,6 @@ public class SlicerService {
                 }
             });
         } catch (IOException e) {
-            // TODO handle exception
             e.printStackTrace();
         }
     }
@@ -174,13 +179,13 @@ public class SlicerService {
             destination = new File(destinationPath.toString());
             Files.copy(source.toPath(), destination.toPath());
         } catch (Exception e){
-            System.err.println("EXCEPTION: Cannot copy pom.xml. Reason: " + e.getMessage());
+            System.err.println("EXCEPTION: Cannot copy file. Reason: " + e.getMessage());
             e.printStackTrace();
         }
         return destination;
     }
 
-    private void checkDirectory(Path path) throws IOException{
+    private void checkDirectory(Path path){
         File tmpDir = new File(path.toString());
         System.out.println("Looking for directory: " + path);
         if (!tmpDir.isDirectory()) {
@@ -191,7 +196,7 @@ public class SlicerService {
     }
 
     public void deleteFiles() throws IOException {
-        Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated");
+        Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated");
         try {
             Files.walk(path).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
         } catch (IOException e){

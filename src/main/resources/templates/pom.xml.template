@@ -33,6 +33,8 @@
         </repository>
     </repositories>
 
+    %%SPRING_DATA_DEPENDENCY_MGMT%%
+
     <dependencies>
         <!-- Spring -->
         <dependency>

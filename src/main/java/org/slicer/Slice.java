@@ -13,6 +13,9 @@ public class Slice {
     private String name;
 
     @JacksonXmlProperty(isAttribute = true)
+    private String description;
+
+    @JacksonXmlProperty(isAttribute = true)
     private String groupId;
 
     @JacksonXmlProperty(isAttribute = true)

@@ -28,6 +28,7 @@ public class DataSource  {
     @JacksonXmlProperty(localName = "Password")
     private String password;
 
+    private static final String SPRING_DATA_DEPENDENCY_MGMT;
     private static final String SPRING_DATA_DEPENDENCY;
     private static final String H2_DRIVER_DEPENDENCY;
     private static final String MARIADB_DRIVER_DEPENDENCY;
@@ -47,7 +48,7 @@ public class DataSource  {
         sb.append("        <dependency>\n");
         sb.append("            <groupId>io.r2dbc</groupId>\n");
         sb.append("            <artifactId>r2dbc-h2</artifactId>\n");
-        sb.append("            <version>0.8.4</version>\n");
+        sb.append("            <version>0.8.4.RELEASE</version>\n");
         sb.append("        </dependency>\n");
         H2_DRIVER_DEPENDENCY = sb.toString();
 
@@ -82,10 +83,25 @@ public class DataSource  {
         sb.append("            <version>0.1.0</version>\n");
         sb.append("        </dependency>\n");
         ORACLE_DRIVER_DEPENDENCY = sb.toString();
+
+        sb.delete(0, sb.length());
+        sb.append("    <dependencyManagement>\n");
+        sb.append("        <dependencies>\n");
+        sb.append("            <dependency>\n");
+        sb.append("                <groupId>org.springframework.data</groupId>\n");
+        sb.append("                <artifactId>spring-data-r2dbc</artifactId>\n");
+        sb.append("                <version>1.2.6</version>\n");
+        sb.append("            </dependency>\n");
+        sb.append("        </dependencies>\n");
+        sb.append("    </dependencyManagement>\n");
+        SPRING_DATA_DEPENDENCY_MGMT = sb.toString();
     }
 
-    @Override
-    public String toString(){
+    public String getDependencyManager(){
+        return this.SPRING_DATA_DEPENDENCY_MGMT;
+    }
+
+    public String getDependencies(){
         StringBuffer sb = new StringBuffer();
         sb.append(SPRING_DATA_DEPENDENCY);
         switch (this.type){
