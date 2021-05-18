@@ -17,6 +17,14 @@ public class SlicerUtils {
 
     public static final Path ZIP_LOCATION = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "slicer.zip");
     public static final Path GENERATED_SOURCE_LOCATION = FileSystems.getDefault().getPath("src", "main", "resources", "generated");
+    public static final Path GENERATED_RESOURCES_LOCATION = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "resources");
+    public static final Path SWAGGER_TEMPLATE_LOCATION = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "SwaggerConfig.java.template");
+    public static final Path POM_TEMPLATE_LOCATION = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "pom.xml.template");
+    public static final Path YAML_TEMPLATE_LOCATION = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "application.yaml.template");
+    public static final Path GENERATED_YAML_LOCATION = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "resources", "application.yaml");
+    public static final Path GENERATED_POM_LOCATION = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "pom.xml");
+
+
 
     public static String buildAutowired(String name){
         StringBuilder sb = new StringBuilder();

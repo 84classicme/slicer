@@ -57,7 +57,7 @@ public class SlicerService {
     }
 
     private void createSwaggerConfigClass(String packagename){
-        Path sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "SwaggerConfig.java.template");
+        Path sourcePath = SlicerUtils.SWAGGER_TEMPLATE_LOCATION;
         Path destinationDir = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "java",  packagename.toLowerCase());
         Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "generated","src", "main", "java",  packagename.toLowerCase(), "SwaggerConfig.java");
         SlicerUtils.checkDirectory(destinationDir);
@@ -66,9 +66,9 @@ public class SlicerService {
     }
 
     private void createPomFile(Slice slice){
-        Path sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "pom.xml.template");
-        Path destinationDir = FileSystems.getDefault().getPath("src", "main", "resources", "generated");
-        Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "pom.xml");
+        Path sourcePath = SlicerUtils.POM_TEMPLATE_LOCATION;
+        Path destinationDir = SlicerUtils.GENERATED_SOURCE_LOCATION;
+        Path destinationPath = SlicerUtils.GENERATED_POM_LOCATION;
         SlicerUtils.checkDirectory(destinationDir);
         SlicerUtils.copyFile(sourcePath, destinationPath);
         addPomValues(destinationPath, slice);
@@ -89,9 +89,9 @@ public class SlicerService {
     }
 
     private void createYamlFile(Slice slice){
-        Path sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "application.yaml.template");
-        Path destinationDir = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "resources");
-        Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "resources", "application.yaml");
+        Path sourcePath = SlicerUtils.YAML_TEMPLATE_LOCATION;
+        Path destinationDir = SlicerUtils.GENERATED_RESOURCES_LOCATION;
+        Path destinationPath = SlicerUtils.GENERATED_YAML_LOCATION;
         SlicerUtils.checkDirectory(destinationDir);
         SlicerUtils.copyFile(sourcePath, destinationPath);
         addYamlValues(destinationPath, slice);
@@ -127,6 +127,7 @@ public class SlicerService {
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "java", packagename.toLowerCase());
             File file = new File(path.toString() + "/" + classname + ".java");
+
             SlicerUtils.writeFile(path, file, w.toFile(packagename));
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write class file for "+ classname + ". Reason: " + e.getMessage());
