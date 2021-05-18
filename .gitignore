@@ -29,5 +29,6 @@ hs_err_pid*
 
 # project
 src/main/resources/slicer/generated/src/main/java/*/*.java
+src/main/resources/slicer/generated/src/test/java/*/*.java
 src/main/resources/slicer/generated/src/main/resources/*yaml
 src/main/resources/slicer/generated/*xml
