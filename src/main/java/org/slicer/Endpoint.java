@@ -1,4 +1,4 @@
-package slicer;
+package org.slicer;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Data;
@@ -35,13 +35,17 @@ public class Endpoint implements Writeable {
 
     public String toImpl(){
         StringBuilder sb = new StringBuilder();
-        sb.append(this.buildAnnotation());
-        if (this.responseCode != null) sb.append(this.buildResponseCode());
+        sb.append(this.buildMapping());
+        if (this.responseCode != null) {
+            sb.append(this.buildResponseCode());
+            sb.append(this.buildApiResponse());
+        }
+        sb.append(this.buildApiOperation());
         sb.append(this.buildMethodSignature());
         return sb.toString();
     }
 
-    private String buildAnnotation(){
+    private String buildMapping(){
         StringBuilder sb = new StringBuilder();
         sb.append("    ");
         switch (this.method){
@@ -79,6 +83,20 @@ public class Endpoint implements Writeable {
         return sb.toString();
     }
 
+    private String buildApiResponse(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("    @ApiResponse(code = ");
+        switch (this.responseCode) {
+            case ("200"):
+                sb.append("200, message = \"OK.\")\n");
+                break;
+            case ("202"):
+                sb.append("202, message = \"Entity created.\")\n");
+                break;
+        }
+        return sb.toString();
+    }
+
     private String buildMethodSignature(){
         StringBuilder sb = new StringBuilder();
         sb.append("    ");
@@ -103,6 +121,16 @@ public class Endpoint implements Writeable {
         sb.append(" ");
         sb.append(this.requestBody.getName());
         sb.append(", ");
+        return sb.toString();
+    }
+
+    private String buildApiOperation(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("    @ApiOperation(value = ");
+        sb.append("\"Rest Method\",\n");
+        sb.append("      response = ");
+        sb.append(this.responseType);
+        sb.append(".class)\n");
         return sb.toString();
     }
 

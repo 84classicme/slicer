@@ -1,15 +1,17 @@
-package slicer;
+package org.slicer;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data // provides @ToString, @EqualsAndHashCode, @Getter, @Setter, and @RequiredArgsConstructor
 @NoArgsConstructor
-public class RequestBody {
-    @JacksonXmlProperty(isAttribute = true)
+public class Slice {
+    @JacksonXmlProperty(localName = "Name")
     private String name;
 
-    @JacksonXmlProperty(isAttribute = true)
-    private String type;
+    @JacksonXmlProperty(localName = "Controllers")
+    private List<Controller> controllers;
 }

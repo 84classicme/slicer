@@ -24,9 +24,9 @@
             </Services>
             <Endpoints>
                 <Endpoint name="createAccount" method="POST" uri="/accounts">
-                    <RequestBody name="slice" type="slicer.Slice"/>
+                    <RequestBody name="slice" type="org.slicer.Slice"/>
                     <ResponseCode>202</ResponseCode>
-                    <ResponseType>slicer.Slice</ResponseType>
+                    <ResponseType>org.slicer.Slice</ResponseType>
                 </Endpoint>
                 <Endpoint name="getAccount" method="GET" uri="/accounts/{region}/{department}">
                     <RequestParams>
@@ -38,7 +38,7 @@
                         <PathVariable name="region" type="String"/>
                     </PathVariables>
                     <ResponseCode>200</ResponseCode>
-                    <ResponseType>slicer.Slice</ResponseType>
+                    <ResponseType>org.slicer.Slice</ResponseType>
                 </Endpoint>
                 <Endpoint name="getAccounts" method="GET" uri="/accounts/search">
                     <RequestParams>
@@ -46,16 +46,16 @@
                         <RequestParam name="state" type="String"/>
                     </RequestParams>
                     <ResponseCode>200</ResponseCode>
-                    <ResponseType>slicer.Slice</ResponseType>
+                    <ResponseType>org.slicer.Slice</ResponseType>
                 </Endpoint>
                 <Endpoint name="editAccount" method="PUT" uri="/accounts/{region}/{department}">
                     <PathVariables>
                         <PathVariable name="department" type="String"/>
                         <PathVariable name="region" type="String"/>
                     </PathVariables>
-                    <RequestBody name="slice" type="slicer.Slice"/>
+                    <RequestBody name="slice" type="org.slicer.Slice"/>
                     <ResponseCode>200</ResponseCode>
-                    <ResponseType>slicer.Slice</ResponseType>
+                    <ResponseType>org.slicer.Slice</ResponseType>
                 </Endpoint>
             </Endpoints>
         </Controller>

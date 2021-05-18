@@ -1,12 +1,13 @@
-package slicer;
+package org.slicer;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.slicer.Writeable;
 
 @Data // provides @ToString, @EqualsAndHashCode, @Getter, @Setter, and @RequiredArgsConstructor
 @NoArgsConstructor
-public class Repository implements Writeable {
+public class Repo implements Writeable {
     @JacksonXmlProperty(isAttribute = true)
     private String name;
 

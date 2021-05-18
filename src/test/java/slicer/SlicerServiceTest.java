@@ -3,7 +3,9 @@ package slicer;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import help.TestHelper;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.slicer.Slice;
+import org.slicer.SlicerService;
 
 import java.io.*;
 import java.net.URL;

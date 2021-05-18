@@ -27,10 +27,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-webflux</artifactId>
             </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-r2dbc</artifactId>
-        </dependency>
 
         <!-- Data -->
         <!-- %%DATABASE_DRIVER_DEPENDENCY%% -->

@@ -4,12 +4,11 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import help.TestHelper;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slicer.*;
 import reactor.core.publisher.Flux;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 
@@ -39,10 +38,10 @@ public class XmlBindingTest {
         Long count = serviceFlux.filter(s -> s.getName().equals("ServiceNameOne")).count().block();
         Assertions.assertThat(count.intValue() == 1);
 
-        List<Repository> repositories = serviceFlux.filter(s -> s.getName().equals("ServiceNameOne")).blockFirst().getRepositories();
+        List<Repo> repositories = serviceFlux.filter(s -> s.getName().equals("ServiceNameOne")).blockFirst().getRepositories();
         Assertions.assertThat(count.intValue() == 2);
 
-        Flux<Repository> repositoryFlux = Flux.fromIterable(repositories);
+        Flux<Repo> repositoryFlux = Flux.fromIterable(repositories);
 
         count = repositoryFlux.filter(s -> s.getName().equals("RepositoryOne")).count().block();
         Assertions.assertThat(count.intValue() == 1);

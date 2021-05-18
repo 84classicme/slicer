@@ -1,4 +1,4 @@
-package slicer;
+package org.slicer;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Data;

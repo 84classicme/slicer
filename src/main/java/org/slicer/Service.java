@@ -1,4 +1,4 @@
-package slicer;
+package org.slicer;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class Service implements Writeable {
     private List<Service> services;
 
     @JacksonXmlProperty(localName = "Repositories")
-    private List<Repository> repositories;
+    private List<Repo> repositories;
 
     public String toImpl(){
         StringBuilder sb = new StringBuilder();

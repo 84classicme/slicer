@@ -1,4 +1,4 @@
-package slicer;
+package org.slicer;
 
 import org.springframework.stereotype.Service;
 
@@ -8,81 +8,104 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 @Service
 public class SlicerService {
 
-    public void serveSlice(Slice slice) throws IOException {
-        ArrayList<File> files = createSourceFiles(slice);
-        Path sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "pom.xml.template");
-        Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "pom.xml");
-        files.add(copyFile(sourcePath, destinationPath));
-        sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "application.yaml.template");
-        destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "resources","application.yaml");
-        files.add(copyFile(sourcePath, destinationPath));
-        System.out.println("Number of files created: " + files.size());
-        zipFiles();
-        System.out.println("Files zipped!");
+    public void serveSlice(Slice slice) {
+        try {
+            createSourceFiles(slice);
+            createPomFile();
+            createYamlFile();
+            zipFiles();
+            // TODO: clean up the source files
+        } catch (Exception e){
+            System.err.println("EXCEPTION: Cannot serve slice.  Reason: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    private ArrayList<File> createSourceFiles(Slice slice){
-        ArrayList<File> files = new ArrayList<>();
+    private void createSourceFiles(Slice slice){
         String packagename = slice.getName();
         slice.getControllers().forEach(controller -> {
-            this.implToFile(packagename, controller, controller.getName(), files);
+            this.writeSourceClassToFile(packagename, controller, controller.getName());
+            this.writeTestClassToFile(packagename, controller.getName());
             controller.getServices().forEach(service -> {
-                this.implToFile(packagename, service, service.getName(), files);
+                this.writeSourceClassToFile(packagename, service, service.getName());
+                this.writeTestClassToFile(packagename, service.getName());
                 service.getServices().forEach(autowired -> {
-                    this.implToFile(packagename, autowired, autowired.getName(), files);
+                    this.writeSourceClassToFile(packagename, autowired, autowired.getName());
+                    this.writeTestClassToFile(packagename, autowired.getName());
                 });
                 service.getRepositories().forEach(repository -> {
-                    this.implToFile(packagename, repository, repository.getName(), files);
+                    this.writeSourceClassToFile(packagename, repository, repository.getName());
                 });
             });
         });
-        return files;
     }
 
-    private ArrayList<File> implToFile(String packagename, Writeable w, String classname, ArrayList<File> files) {
+    private void createPomFile(){
+        Path sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "pom.xml.template");
+        Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "pom.xml");
+        copyFile(sourcePath, destinationPath);
+    }
+
+    private void createYamlFile(){
+        Path sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "application.yaml.template");
+        Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "resources", "application.yaml");
+        copyFile(sourcePath, destinationPath);
+    }
+
+    private void writeTestClassToFile(String packagename, String classname) {
         System.out.println("Writing file: " + classname + ".java");
-        File implToWrite = null;
+        File file = null;
         try {
-            Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "java", packagename.toLowerCase());
-            checkDirectory(path);
-            implToWrite = new File(path.toString() + "/" + classname + ".java");
-            if(implToWrite.exists()) {
-                System.out.println("File already created. Skipping.");
-                return files;
-            }
-            FileWriter fileWriter = new FileWriter(implToWrite);
-            fileWriter.write(w.toImpl());
-            fileWriter.flush();
-            fileWriter.close();
-            files.add(implToWrite);
+            Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "test", "java", packagename.toLowerCase());
+            file = new File(path.toString() + "/" + classname + "Test.java");
+            writeFile(path, file, SlicerUtils.buildTestClass(classname));
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write class file for "+ classname + ". Reason: " + e.getMessage());
             e.printStackTrace();
         }
-        return files;
+    }
+
+    private void writeSourceClassToFile(String packagename, Writeable w, String classname) {
+        System.out.println("Writing file: " + classname + ".java");
+        File file = null;
+        try {
+            Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "java", packagename.toLowerCase());
+            file = new File(path.toString() + "/" + classname + ".java");
+            writeFile(path, file, w.toImpl());
+        } catch (Exception e){
+            System.err.println("EXCEPTION: Cannot write class file for "+ classname + ". Reason: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void writeFile(Path path, File file, String content) throws IOException{
+        checkDirectory(path);
+        if(file.exists()) {
+            System.out.println("File already created. Skipping.");
+            return;
+        }
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.write(content);
+        fileWriter.flush();
+        fileWriter.close();
     }
 
     public void zipFiles(){
-        Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "slicer.zip");
+        Path destinationPath = SlicerUtils.ZIP_LOCATION;
         Path mysourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated");
-
         try (FileOutputStream fos = new FileOutputStream(destinationPath.toString());
-             ZipOutputStream zos = new ZipOutputStream(fos)) {
+                    ZipOutputStream zos = new ZipOutputStream(fos)) {
             Path sourcePath = Paths.get(mysourcePath.toString());
-            // using WalkFileTree to traverse directory
             Files.walkFileTree(sourcePath, new SimpleFileVisitor<Path>(){
                 @Override
                 public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
-                    // it starts with the source folder so skipping that
                     if(!sourcePath.equals(dir)){
-                        //System.out.println("DIR   " + dir);
                         zos.putNextEntry(new ZipEntry(sourcePath.relativize(dir).toString() + "/"));
                         zos.closeEntry();
                     }
@@ -97,7 +120,7 @@ public class SlicerService {
                 }
             });
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+            // TODO handle exception
             e.printStackTrace();
         }
     }
