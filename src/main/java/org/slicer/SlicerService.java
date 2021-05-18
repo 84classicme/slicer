@@ -29,6 +29,7 @@ public class SlicerService {
 
     private void createSourceFiles(Slice slice){
         String packagename = slice.getName();
+        createApplicationClass(packagename);
         slice.getControllers().forEach(controller -> {
             this.writeSourceClassToFile(packagename, controller, controller.getName());
             this.writeTestClassToFile(packagename, controller.getName());
@@ -46,6 +47,19 @@ public class SlicerService {
         });
     }
 
+    private void createApplicationClass(String packagename){
+        String name = packagename.substring(0, 1).toUpperCase() + packagename.substring(1);
+        System.out.println("Writing application class file: " + name + "Application.java");
+        try {
+            Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "java",  packagename.toLowerCase());
+            File file = new File(path.toString() + "/" + name + "Application.java");
+            writeFile(path, file, SlicerUtils.buildApplicationClass(name, packagename));
+        } catch (Exception e){
+            System.err.println("EXCEPTION: Cannot write application class file for "+ name + "Application. Reason: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     private void createPomFile(){
         Path sourcePath = FileSystems.getDefault().getPath("src", "main", "resources", "templates", "pom.xml.template");
         Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "pom.xml");
@@ -59,13 +73,13 @@ public class SlicerService {
     }
 
     private void writeTestClassToFile(String packagename, String classname) {
-        System.out.println("Writing file: " + classname + ".java");
+        System.out.println("Writing test class file: " + classname + "Test.java");
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "test", "java", packagename.toLowerCase());
             File file = new File(path.toString() + "/" + classname + "Test.java");
             writeFile(path, file, SlicerUtils.buildTestClass(classname, packagename.toLowerCase()));
         } catch (Exception e){
-            System.err.println("EXCEPTION: Cannot write class file for "+ classname + ". Reason: " + e.getMessage());
+            System.err.println("EXCEPTION: Cannot write test class file for "+ classname + "Test. Reason: " + e.getMessage());
             e.printStackTrace();
         }
     }

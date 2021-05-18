@@ -39,4 +39,22 @@ public class SlicerUtils {
         sb.append(";\n\n");
         return sb.toString();
     }
+
+    public static String buildApplicationClass(String name, String packagename){
+        StringBuilder sb = new StringBuilder();
+        sb.append(buildPackage(packagename));
+        sb.append("import org.springframework.boot.SpringApplication;\n");
+        sb.append("import org.springframework.boot.autoconfigure.SpringBootApplication;\n");
+        sb.append("\n");
+        sb.append("@SpringBootApplication\n");
+        sb.append("public class ");
+        sb.append(name);
+        sb.append("Application {\n");
+        sb.append("public static void main(String[] args) { SpringApplication.run(");
+        sb.append(name);
+        sb.append("Application.class, args); }\n");
+        sb.append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
 }
