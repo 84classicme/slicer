@@ -60,10 +60,9 @@ public class SlicerService {
 
     private void writeTestClassToFile(String packagename, String classname) {
         System.out.println("Writing file: " + classname + ".java");
-        File file = null;
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "test", "java", packagename.toLowerCase());
-            file = new File(path.toString() + "/" + classname + "Test.java");
+            File file = new File(path.toString() + "/" + classname + "Test.java");
             writeFile(path, file, SlicerUtils.buildTestClass(classname, packagename.toLowerCase()));
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write class file for "+ classname + ". Reason: " + e.getMessage());
@@ -73,10 +72,9 @@ public class SlicerService {
 
     private void writeSourceClassToFile(String packagename, Writeable w, String classname) {
         System.out.println("Writing file: " + classname + ".java");
-        File file = null;
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "java", packagename.toLowerCase());
-            file = new File(path.toString() + "/" + classname + ".java");
+            File file = new File(path.toString() + "/" + classname + ".java");
             writeFile(path, file, w.toImpl(packagename));
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write class file for "+ classname + ". Reason: " + e.getMessage());
