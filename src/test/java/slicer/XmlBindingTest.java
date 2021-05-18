@@ -38,10 +38,10 @@ public class XmlBindingTest {
         Long count = serviceFlux.filter(s -> s.getName().equals("ServiceNameOne")).count().block();
         Assertions.assertThat(count.intValue() == 1);
 
-        List<Repo> repositories = serviceFlux.filter(s -> s.getName().equals("ServiceNameOne")).blockFirst().getRepositories();
+        List<Repository> repositories = serviceFlux.filter(s -> s.getName().equals("ServiceNameOne")).blockFirst().getRepositories();
         Assertions.assertThat(count.intValue() == 2);
 
-        Flux<Repo> repositoryFlux = Flux.fromIterable(repositories);
+        Flux<Repository> repositoryFlux = Flux.fromIterable(repositories);
 
         count = repositoryFlux.filter(s -> s.getName().equals("RepositoryOne")).count().block();
         Assertions.assertThat(count.intValue() == 1);

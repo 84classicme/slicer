@@ -18,9 +18,9 @@ public class SlicerUtils {
         return sb.toString();
     }
 
-    public static String buildTestClass(String name){
+    public static String buildTestClass(String name, String packagename){
         StringBuilder sb = new StringBuilder();
-        sb.append("package slicer.generated;\n\n");
+        sb.append(buildPackage(packagename));
         sb.append("import org.junit.jupiter.api.*;\n");
         sb.append("import org.assertj.core.api.Assertions;\n");
         sb.append("\n");
@@ -29,6 +29,14 @@ public class SlicerUtils {
         sb.append("Test {\n");
         sb.append("\n");
         sb.append("}");
+        return sb.toString();
+    }
+
+    public static String buildPackage(String packagename){
+        StringBuilder sb = new StringBuilder();
+        sb.append("package ");
+        sb.append(packagename.toLowerCase());
+        sb.append(";\n\n");
         return sb.toString();
     }
 }

@@ -64,7 +64,7 @@ public class SlicerService {
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "test", "java", packagename.toLowerCase());
             file = new File(path.toString() + "/" + classname + "Test.java");
-            writeFile(path, file, SlicerUtils.buildTestClass(classname));
+            writeFile(path, file, SlicerUtils.buildTestClass(classname, packagename.toLowerCase()));
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write class file for "+ classname + ". Reason: " + e.getMessage());
             e.printStackTrace();
@@ -77,7 +77,7 @@ public class SlicerService {
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated", "src", "main", "java", packagename.toLowerCase());
             file = new File(path.toString() + "/" + classname + ".java");
-            writeFile(path, file, w.toImpl());
+            writeFile(path, file, w.toImpl(packagename));
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write class file for "+ classname + ". Reason: " + e.getMessage());
             e.printStackTrace();

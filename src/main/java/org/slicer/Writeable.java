@@ -1,5 +1,5 @@
 package org.slicer;
 
 public interface Writeable {
-    String toImpl();
+    String toImpl(String packagename);
 }

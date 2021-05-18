@@ -16,11 +16,11 @@ public class Service implements Writeable {
     private List<Service> services;
 
     @JacksonXmlProperty(localName = "Repositories")
-    private List<Repo> repositories;
+    private List<Repository> repositories;
 
-    public String toImpl(){
+    public String toImpl(String packagename){
         StringBuilder sb = new StringBuilder();
-        sb.append("package slicer.generated;\n\n");
+        sb.append(SlicerUtils.buildPackage(packagename));
         sb.append("import org.springframework.stereotype.Service;\n");
         if(services != null || repositories != null){
             sb.append("import org.springframework.beans.factory.annotation.Autowired;\n");

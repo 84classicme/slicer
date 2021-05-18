@@ -3,3 +3,14 @@ spring:
         url: %%DATASOURCE_URL%%
         username: %%DATASOURCE_USERNAME%%
         password: %%DATASOURCE_PASSWORD%%
+app:
+  name: %%APPLICATION_NAME%%
+  api:
+    title: Spring Boot APIs
+    version: 1.0.0
+    description: %%APPLICATION_DESCRIPTION%%
+    base-package: %%APPLICATION_CONTROLLER_FQDN%%
+    contact-name: %%APPLICATION_CONTACT_NAME%%
+    contact-email: %%APPLICATION_CONTACT_EMAIL%%
+    swagger:
+      enable: true
