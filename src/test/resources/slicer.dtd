@@ -1,28 +1,40 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE Slice [
-        <!ELEMENT Slice (Name, Controllers)>
-        <!ELEMENT Name (#PCDATA)>
+        <!ELEMENT Slice (Controllers, DataSource)>
+        <!ATTLIST Slice
+                name CDATA
+                groupId CDATA
+                artifactId CDATA>
         <!ELEMENT Controllers (Controller)>
         <!ELEMENT Controller (Services, Endpoints)>
         <!ATTLIST Controller name CDATA>
         <!ELEMENT Services (Service*)>
         <!ELEMENT Service (Services, Repositories)>
         <!ATTLIST Service name CDATA>
-        <!ELEMENT Repositories (Repository)>
+        <!ELEMENT Repositories (Repository*)>
         <!ELEMENT Repository (#PCDATA)>
         <!ATTLIST Repository name CDATA>
-        <!ELEMENT Endpoints (Endpoint)>
+        <!ELEMENT Endpoints (Endpoint*)>
         <!ELEMENT Endpoint (RequestParams , PathVariables, RequestBody, ResponseCode, ResponseType)>
         <!ATTLIST Endpoint
                 name CDATA
                 uri CDATA "/"
                 method(GET | POST | PUT | DELETE) "GET">
+        <!ELEMENT Name (#PCDATA)>
         <!ELEMENT Type (#PCDATA)>
-        <!ELEMENT RequestParams (RequestParam)>
+        <!ELEMENT RequestParams (RequestParam*)>
         <!ELEMENT RequestParam (Name, Type)>
-        <!ELEMENT PathVariables (PathVariable)>
+        <!ELEMENT PathVariables (PathVariable*)>
         <!ELEMENT PathVariable (Name, Type)>
         <!ELEMENT RequestBody (Name, Type)>
         <!ELEMENT ResponseCode (#PCDATA)>
         <!ELEMENT ResponseType (#PCDATA)>
+        <!ELEMENT DataSource (Port, Host, Database, Url, Username, Password)>
+        <!ATTLIST DataSource
+                type(h2 | mariadb | mssql | postgres | oracle ) "h2">
+        <!ELEMENT Port (#PCDATA)>
+        <!ELEMENT Host (#PCDATA)>
+        <!ELEMENT Database (#PCDATA)>
+        <!ELEMENT Url (#PCDATA)>
+        <!ELEMENT Username (#PCDATA)>
+        <!ELEMENT Password (#PCDATA)>
 ]>
