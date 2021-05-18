@@ -70,12 +70,17 @@ public class SlicerService {
         Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "pom.xml");
         checkDirectory(destinationDir);
         copyFile(sourcePath, destinationPath);
+        addPomValues(destinationPath, slice);
+    }
+
+    private void addPomValues(Path destinationPath, Slice slice){
         fillTemplate(destinationPath, "%%GROUP_ID%%", slice.getGroupId());
         fillTemplate(destinationPath, "%%ARTIFACT_ID%%", slice.getArtifactId());
         fillTemplate(destinationPath, "%%DESCRIPTION%%", slice.getDescription());
-        if (slice.getDatasource() != null)
+        if (slice.getDatasource() != null) {
             fillTemplate(destinationPath, "%%SPRING_DATA_DEPENDENCY_MGMT%%", slice.getDatasource().getDependencyManager());
             fillTemplate(destinationPath, "%%DATABASE_DRIVER_DEPENDENCY%%", slice.getDatasource().getDependencies());
+        }
     }
 
     private void fillTemplate(Path path, String oldString, String newString){
@@ -97,6 +102,10 @@ public class SlicerService {
         Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "resources", "application.yaml");
         checkDirectory(destinationDir);
         copyFile(sourcePath, destinationPath);
+        addYamlValues(destinationPath, slice);
+    }
+
+    private void addYamlValues(Path destinationPath, Slice slice){
         fillTemplate(destinationPath, "%%DATASOURCE_PORT%%", slice.getDatasource().getPort());
         fillTemplate(destinationPath, "%%DATASOURCE_HOST%%", slice.getDatasource().getHost());
         fillTemplate(destinationPath, "%%DATASOURCE_DATABASE_NAME%%", slice.getDatasource().getDatabase());
@@ -172,7 +181,7 @@ public class SlicerService {
         }
     }
 
-    private File copyFile(Path sourcePath, Path destinationPath){
+    private void copyFile(Path sourcePath, Path destinationPath){
         File destination = null;
         try {
             File source = new File(sourcePath.toString());
@@ -182,7 +191,6 @@ public class SlicerService {
             System.err.println("EXCEPTION: Cannot copy file. Reason: " + e.getMessage());
             e.printStackTrace();
         }
-        return destination;
     }
 
     private void checkDirectory(Path path){
@@ -195,7 +203,7 @@ public class SlicerService {
         }
     }
 
-    public void deleteFiles() throws IOException {
+    public void deleteFiles() {
         Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated");
         try {
             Files.walk(path).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
