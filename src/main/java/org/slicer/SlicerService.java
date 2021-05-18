@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,7 +24,7 @@ public class SlicerService {
             createPomFile(slice);
             createYamlFile(slice);
             zipFiles();
-            // TODO: clean up the source files
+            deleteFiles();
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot serve slice.  Reason: " + e.getMessage());
             e.printStackTrace();
@@ -184,7 +185,18 @@ public class SlicerService {
         System.out.println("Looking for directory: " + path);
         if (!tmpDir.isDirectory()) {
             System.out.println("Directory not found. Creating.");
-            Files.createDirectory(path).toFile();
+            boolean success = tmpDir.mkdirs();
+            System.out.println(success);
+        }
+    }
+
+    public void deleteFiles() throws IOException {
+        Path path = FileSystems.getDefault().getPath("src", "main", "resources", "slicer", "generated");
+        try {
+            Files.walk(path).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+        } catch (IOException e){
+            System.err.println("EXCEPTION: Cannot delete files. Reason: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
