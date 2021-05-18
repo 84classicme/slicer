@@ -12,5 +12,6 @@ app:
     title: Spring Boot APIs
     version: 1.0.0
     base-package: %%APPLICATION_CONTROLLER_FQDN%%
+    description: %%APPLICATION_DESCRIPTION%%
     swagger:
       enable: true

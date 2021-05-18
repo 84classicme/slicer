@@ -1,6 +1,6 @@
 <?xml version = "1.0" encoding = "UTF-8" ?>
 <!DOCTYPE Slice SYSTEM "slicer.dtd">
-<Slice name="SlicerTestOne" groupId="io.slicer" artifactId="slicer-core">
+<Slice name="SlicerTestOne" groupId="io.slicer" artifactId="slicer-core" description="Example slice implementing a few endpoints of various design.">
     <Controllers>
         <Controller name="AccountController">
             <Services>
@@ -30,10 +30,6 @@
                     <ResponseType>Slice</ResponseType>
                 </Endpoint>
                 <Endpoint name="getAccount" method="GET" uri="/accounts/{region}/{department}">
-                    <RequestParams>
-                        <RequestParam name="name" type="String"/>
-                        <RequestParam name="ssn" type="String"/>
-                    </RequestParams>
                     <PathVariables>
                         <PathVariable name="department" type="String"/>
                         <PathVariable name="region" type="String"/>
