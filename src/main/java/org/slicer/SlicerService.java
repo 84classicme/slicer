@@ -27,17 +27,17 @@ public class SlicerService {
         createApplicationClass(packagename);
         createSwaggerConfigClass(packagename);
         slice.getControllers().forEach(controller -> {
-            this.writeSourceClassToFile(packagename, controller, controller.getName());
-            this.writeTestClassToFile(packagename, controller.getName());
+            this.writeSourceClassToFile(slice, controller, controller.getName());
+            this.writeTestClassToFile(slice, controller.getName());
             controller.getServices().forEach(service -> {
-                this.writeSourceClassToFile(packagename, service, service.getName());
-                this.writeTestClassToFile(packagename, service.getName());
+                this.writeSourceClassToFile(slice, service, service.getName());
+                this.writeTestClassToFile(slice, service.getName());
                 service.getServices().forEach(autowired -> {
-                    this.writeSourceClassToFile(packagename, autowired, autowired.getName());
-                    this.writeTestClassToFile(packagename, autowired.getName());
+                    this.writeSourceClassToFile(slice, autowired, autowired.getName());
+                    this.writeTestClassToFile(slice, autowired.getName());
                 });
                 service.getRepositories().forEach(repository -> {
-                    this.writeSourceClassToFile(packagename, repository, repository.getName());
+                    this.writeSourceClassToFile(slice, repository, repository.getName());
                 });
             });
         });
@@ -78,6 +78,16 @@ public class SlicerService {
         SlicerUtils.fillTemplate(destinationPath, "%%GROUP_ID%%", slice.getGroupId());
         SlicerUtils.fillTemplate(destinationPath, "%%ARTIFACT_ID%%", slice.getArtifactId());
         SlicerUtils.fillTemplate(destinationPath, "%%DESCRIPTION%%", slice.getDescription());
+        if (slice.getType() != null) {
+            switch (slice.getType()) {
+                case ("spring-web"):
+                    SlicerUtils.fillTemplate(destinationPath, "%%CORE_APPLICATION_DEPENDENCIES%%", SlicerUtils.SPRING_STARTER_WEB_DEPENDENCY);
+                    break;
+                case ("spring-webflux"):
+                    SlicerUtils.fillTemplate(destinationPath, "%%CORE_APPLICATION_DEPENDENCIES%%", SlicerUtils.SPRING_STARTER_WEBFLUX_DEPENDENCY);
+                    break;
+            }
+        }
         if (slice.getDatasource() != null) {
             SlicerUtils.fillTemplate(destinationPath, "%%SPRING_DATA_DEPENDENCY_MGMT%%", slice.getDatasource().getDependencyManager());
             SlicerUtils.fillTemplate(destinationPath, "%%DATABASE_DRIVER_DEPENDENCY%%", slice.getDatasource().getDependencies());
@@ -110,7 +120,8 @@ public class SlicerService {
         SlicerUtils.fillTemplate(destinationPath, "%%APPLICATION_CONTROLLER_FQDN%%", fqdn );
     }
 
-    private void writeTestClassToFile(String packagename, String classname) {
+    private void writeTestClassToFile(Slice slice, String classname) {
+        String packagename = slice.getName();
         System.out.println("Writing test class file: " + classname + "Test.java");
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "test", "java", packagename.toLowerCase());
@@ -122,13 +133,13 @@ public class SlicerService {
         }
     }
 
-    private void writeSourceClassToFile(String packagename, Writeable w, String classname) {
+    private void writeSourceClassToFile(Slice slice, Writeable w, String classname) {
+        String packagename = slice.getName();
         System.out.println("Writing file: " + classname + ".java");
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "java", packagename.toLowerCase());
             File file = new File(path.toString() + "/" + classname + ".java");
-
-            SlicerUtils.writeFile(path, file, w.toFile(packagename));
+            SlicerUtils.writeFile(path, file, w.toFile(slice));
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write class file for "+ classname + ". Reason: " + e.getMessage());
             e.printStackTrace();

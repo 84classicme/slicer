@@ -1,6 +1,6 @@
 <?xml version = "1.0" encoding = "UTF-8" ?>
 <!DOCTYPE Slice SYSTEM "slicer.dtd">
-<Slice name="SlicerTestOne" groupId="io.slicer" artifactId="slicer-core" description="Example slice implementing a few endpoints of various design.">
+<Slice name="SlicerTestOne" type="spring-webflux" groupId="io.slicer" artifactId="slicer-core" description="Example slice implementing a few endpoints of various design.">
     <Controllers>
         <Controller name="AccountController">
             <Services>
@@ -57,7 +57,7 @@
             </Endpoints>
         </Controller>
     </Controllers>
-    <DataSource type="h2">
+    <DataSource type="mariadb">
         <Port>1090</Port>
         <Host>localhost</Host>
         <Database>my_schema</Database>

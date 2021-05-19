@@ -18,9 +18,9 @@ public class Controller implements Writeable {
     @JacksonXmlProperty(localName = "Endpoints")
     private List<Endpoint> endpoints;
 
-    public String toFile(String packagename){
+    public String toFile(Slice slice){
         StringBuilder sb = new StringBuilder();
-        sb.append(SlicerUtils.buildPackage(packagename));
+        sb.append(SlicerUtils.buildPackage(slice.getName()));
         sb.append("import io.swagger.annotations.*;\n");
         sb.append("import org.springframework.web.bind.annotation.*;\n");
         sb.append("import org.springframework.http.*;\n");
@@ -30,7 +30,7 @@ public class Controller implements Writeable {
         this.services.forEach(s -> sb.append(SlicerUtils.buildAutowired(s.getName())));
         sb.append("\n");
         this.endpoints.forEach(e -> {
-            sb.append(e.toFile(packagename));
+            sb.append(e.toFile(slice));
             sb.append("\n\n");
         });
         sb.append("\n");

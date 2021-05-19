@@ -18,9 +18,9 @@ public class Service implements Writeable {
     @JacksonXmlProperty(localName = "Repositories")
     private List<Repository> repositories;
 
-    public String toFile(String packagename){
+    public String toFile(Slice slice){
         StringBuilder sb = new StringBuilder();
-        sb.append(SlicerUtils.buildPackage(packagename));
+        sb.append(SlicerUtils.buildPackage(slice.getName()));
         sb.append("import org.springframework.stereotype.Service;\n");
         if(services != null || repositories != null){
             sb.append("import org.springframework.beans.factory.annotation.Autowired;\n");

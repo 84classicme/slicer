@@ -2,6 +2,7 @@
         <!ELEMENT Slice (Controllers, DataSource)>
         <!ATTLIST Slice
                 name CDATA
+                type (spring-web | spring-webflux) "spring-web"
                 groupId CDATA
                 artifactId CDATA>
         <!ELEMENT Controllers (Controller)>
@@ -30,7 +31,7 @@
         <!ELEMENT ResponseType (#PCDATA)>
         <!ELEMENT DataSource (Port, Host, Database, Url, Username, Password)>
         <!ATTLIST DataSource
-                type(h2 | mariadb | mssql | postgres | oracle ) "h2">
+                type(h2 | mariadb | mssql | postgres | oracle | mongodb | reactive-h2 | reactive-mariadb | reactive-mssql | reactive-postgres | reactive-oracle | reactive-mongodb ) "h2">
         <!ELEMENT Port (#PCDATA)>
         <!ELEMENT Host (#PCDATA)>
         <!ELEMENT Database (#PCDATA)>

@@ -33,7 +33,7 @@ public class Endpoint implements Writeable {
     @JacksonXmlProperty(localName = "ResponseType")
     private String responseType;
 
-    public String toFile(String packagename){
+    public String toFile(Slice slice){
         StringBuilder sb = new StringBuilder();
         sb.append(this.buildMapping());
         if (this.responseCode != null) {

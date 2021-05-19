@@ -10,15 +10,26 @@ public class Repository implements Writeable {
     @JacksonXmlProperty(isAttribute = true)
     private String name;
 
-    public String toFile(String packagename){
+    public String toFile(Slice slice){
+        boolean reactive = slice.getDatasource() != null &&
+            slice.getDatasource().getType() != null &&
+            slice.getDatasource().getType().contains("reactive");
         StringBuilder sb = new StringBuilder();
-        sb.append(SlicerUtils.buildPackage(packagename));
+        sb.append(SlicerUtils.buildPackage(slice.getName()));
         sb.append("import org.springframework.stereotype.Repository;\n");
-        sb.append("import org.springframework.data.repository.reactive.ReactiveCrudRepository;\n\n");
+        if(reactive) {
+            sb.append("import org.springframework.data.repository.reactive.ReactiveCrudRepository;\n\n");
+        } else {
+            sb.append("import org.springframework.data.repository.CrudRepository;\n\n");
+        }
         sb.append("@Repository\n");
         sb.append("public interface ");
         sb.append(name);
-        sb.append(" extends ReactiveCrudRepository<String, String> {\n\n");
+        if(reactive) {
+            sb.append(" extends ReactiveCrudRepository<String, String> {\n\n");
+        } else {
+            sb.append(" extends CrudRepository<String, String> {\n\n");
+        }
         sb.append("}");
         return sb.toString();
     }
