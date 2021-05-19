@@ -20,14 +20,14 @@ public class Controller implements Writeable {
 
     public String toFile(Slice slice){
         StringBuilder sb = new StringBuilder();
-        sb.append(SlicerUtils.buildPackage(slice.getName()));
+        sb.append(SlicerCodeGenUtils.buildPackage(slice.getName()));
         sb.append("import io.swagger.annotations.*;\n");
         sb.append("import org.springframework.web.bind.annotation.*;\n");
         sb.append("import org.springframework.http.*;\n");
         sb.append("import org.springframework.beans.factory.annotation.Autowired;\n");
         sb.append("\n");
         sb.append(buildController(this.name));
-        this.services.forEach(s -> sb.append(SlicerUtils.buildAutowired(s.getName())));
+        this.services.forEach(s -> sb.append(SlicerCodeGenUtils.buildAutowired(s.getName())));
         sb.append("\n");
         this.endpoints.forEach(e -> {
             sb.append(e.toFile(slice));

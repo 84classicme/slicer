@@ -111,15 +111,17 @@ public class Endpoint implements Writeable {
                 sb.append(">> ");
             }
         } else if (slice.getType() != null && slice.getType().equals("spring-web")){
-            sb.append("ResponseEntity<");
-            if (this.responseType != null) {
+            if (this.responseType == null){
+                sb.append("void ");
+            } else {
+                sb.append("ResponseEntity<");
                 sb.append(this.responseType);
+                sb.append("> ");
             }
-            sb.append("> ");
         }
         sb.append(this.name);
         sb.append("(");
-        if(this.getRequestBody() !=null) sb.append(this.buildRequestBody());
+        sb.append(this.buildRequestBody());
         sb.append(this.buildRequestParams());
         sb.append(this.buildPathVariables());
         if(sb.lastIndexOf(", ") > 0) {
@@ -134,11 +136,13 @@ public class Endpoint implements Writeable {
 
     private  String buildRequestBody(){
         StringBuilder sb = new StringBuilder();
-        sb.append("@RequestBody ");
-        sb.append(this.requestBody.getType());
-        sb.append(" ");
-        sb.append(this.requestBody.getName());
-        sb.append(", ");
+        if(this.requestBody != null) {
+            sb.append("@RequestBody ");
+            sb.append(this.requestBody.getType());
+            sb.append(" ");
+            sb.append(this.requestBody.getName());
+            sb.append(", ");
+        }
         return sb.toString();
     }
 
@@ -159,7 +163,7 @@ public class Endpoint implements Writeable {
 
     private  String buildRequestParams(){
         StringBuilder sb = new StringBuilder();
-        if(requestParams != null) {
+        if(this.requestParams != null) {
             this.requestParams.forEach(p -> {
                 sb.append("@RequestParam(value=\"");
                 sb.append(p.getName());

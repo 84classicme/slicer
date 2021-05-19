@@ -29,7 +29,7 @@ public class SlicerController {
         ZeroCopyHttpOutputMessage zeroCopyHttpOutputMessage = (ZeroCopyHttpOutputMessage) response;
         response.getHeaders().setContentType(MediaType.APPLICATION_OCTET_STREAM);
         slicerService.serveSlice(slice);
-        Resource resource = new ClassPathResource(SlicerUtils.ZIP_LOCATION.toString());
+        Resource resource = new ClassPathResource(SlicerConstants.ZIP_LOCATION.toString());
         File file = resource.getFile();
         return zeroCopyHttpOutputMessage.writeWith(file, 0, file.length());
     }

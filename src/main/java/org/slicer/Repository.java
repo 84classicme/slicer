@@ -15,7 +15,7 @@ public class Repository implements Writeable {
             slice.getDatasource().getType() != null &&
             slice.getDatasource().getType().contains("reactive");
         StringBuilder sb = new StringBuilder();
-        sb.append(SlicerUtils.buildPackage(slice.getName()));
+        sb.append(SlicerCodeGenUtils.buildPackage(slice.getName()));
         sb.append("import org.springframework.stereotype.Repository;\n");
         if(reactive) {
             sb.append("import org.springframework.data.repository.reactive.ReactiveCrudRepository;\n\n");

@@ -14,8 +14,8 @@ public class SlicerService {
             createSourceFiles(slice);
             createPomFile(slice);
             createYamlFile(slice);
-            SlicerUtils.zipFiles();
-            SlicerUtils.deleteFiles();
+            SlicerIO.zipFiles();
+            SlicerIO.deleteFiles();
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot serve slice.  Reason: " + e.getMessage());
             e.printStackTrace();
@@ -50,7 +50,7 @@ public class SlicerService {
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "java",  packagename.toLowerCase());
             File file = new File(path.toString() + "/" + name + "Application.java");
-            SlicerUtils.writeFile(path, file, SlicerUtils.buildApplicationClass(name, packagename));
+            SlicerIO.writeFile(path, file, SlicerCodeGenUtils.buildApplicationClass(name, packagename));
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write application class file for "+ name + "Application. Reason: " + e.getMessage());
             e.printStackTrace();
@@ -58,67 +58,67 @@ public class SlicerService {
     }
 
     private void createSwaggerConfigClass(String packagename){
-        Path sourcePath = SlicerUtils.SWAGGER_TEMPLATE_LOCATION;
+        Path sourcePath = SlicerConstants.SWAGGER_TEMPLATE_LOCATION;
         Path destinationDir = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "java",  packagename.toLowerCase());
         Path destinationPath = FileSystems.getDefault().getPath("src", "main", "resources", "generated","src", "main", "java",  packagename.toLowerCase(), "SwaggerConfig.java");
-        SlicerUtils.checkDirectory(destinationDir);
-        SlicerUtils.copyFile(sourcePath, destinationPath);
+        SlicerIO.checkDirectory(destinationDir);
+        SlicerIO.copyFile(sourcePath, destinationPath);
         addSwaggerConfigValues(destinationPath, packagename);
     }
 
     private void createPomFile(Slice slice){
-        Path sourcePath = SlicerUtils.POM_TEMPLATE_LOCATION;
-        Path destinationDir = SlicerUtils.GENERATED_SOURCE_LOCATION;
-        Path destinationPath = SlicerUtils.GENERATED_POM_LOCATION;
-        SlicerUtils.checkDirectory(destinationDir);
-        SlicerUtils.copyFile(sourcePath, destinationPath);
+        Path sourcePath = SlicerConstants.POM_TEMPLATE_LOCATION;
+        Path destinationDir = SlicerConstants.GENERATED_SOURCE_LOCATION;
+        Path destinationPath = SlicerConstants.GENERATED_POM_LOCATION;
+        SlicerIO.checkDirectory(destinationDir);
+        SlicerIO.copyFile(sourcePath, destinationPath);
         addPomValues(destinationPath, slice);
     }
 
     private void addPomValues(Path destinationPath, Slice slice){
-        SlicerUtils.fillTemplate(destinationPath, "%%GROUP_ID%%", slice.getGroupId());
-        SlicerUtils.fillTemplate(destinationPath, "%%ARTIFACT_ID%%", slice.getArtifactId());
-        SlicerUtils.fillTemplate(destinationPath, "%%DESCRIPTION%%", slice.getDescription());
+        SlicerIO.fillTemplate(destinationPath, "%%GROUP_ID%%", slice.getGroupId());
+        SlicerIO.fillTemplate(destinationPath, "%%ARTIFACT_ID%%", slice.getArtifactId());
+        SlicerIO.fillTemplate(destinationPath, "%%DESCRIPTION%%", slice.getDescription());
         if (slice.getType() != null) {
             switch (slice.getType()) {
                 case ("spring-web"):
-                    SlicerUtils.fillTemplate(destinationPath, "%%CORE_APPLICATION_DEPENDENCIES%%", SlicerUtils.SPRING_STARTER_WEB_DEPENDENCY);
+                    SlicerIO.fillTemplate(destinationPath, "%%CORE_APPLICATION_DEPENDENCIES%%", SlicerConstants.SPRING_STARTER_WEB_DEPENDENCY);
                     break;
                 case ("spring-webflux"):
-                    SlicerUtils.fillTemplate(destinationPath, "%%CORE_APPLICATION_DEPENDENCIES%%", SlicerUtils.SPRING_STARTER_WEBFLUX_DEPENDENCY);
+                    SlicerIO.fillTemplate(destinationPath, "%%CORE_APPLICATION_DEPENDENCIES%%", SlicerConstants.SPRING_STARTER_WEBFLUX_DEPENDENCY);
                     break;
             }
         }
         if (slice.getDatasource() != null) {
-            SlicerUtils.fillTemplate(destinationPath, "%%SPRING_DATA_DEPENDENCY_MGMT%%", slice.getDatasource().getDependencyManager());
-            SlicerUtils.fillTemplate(destinationPath, "%%DATABASE_DRIVER_DEPENDENCY%%", slice.getDatasource().getDependencies());
+            SlicerIO.fillTemplate(destinationPath, "%%SPRING_DATA_DEPENDENCY_MGMT%%", slice.getDatasource().getDependencyManager());
+            SlicerIO.fillTemplate(destinationPath, "%%DATABASE_DRIVER_DEPENDENCY%%", slice.getDatasource().getDependencies());
         }
     }
 
     private void addSwaggerConfigValues(Path destinationPath, String packagename){
-        SlicerUtils.fillTemplate(destinationPath, "%%PACKAGE%%", SlicerUtils.buildPackage(packagename));
+        SlicerIO.fillTemplate(destinationPath, "%%PACKAGE%%", SlicerCodeGenUtils.buildPackage(packagename));
     }
 
     private void createYamlFile(Slice slice){
-        Path sourcePath = SlicerUtils.YAML_TEMPLATE_LOCATION;
-        Path destinationDir = SlicerUtils.GENERATED_RESOURCES_LOCATION;
-        Path destinationPath = SlicerUtils.GENERATED_YAML_LOCATION;
-        SlicerUtils.checkDirectory(destinationDir);
-        SlicerUtils.copyFile(sourcePath, destinationPath);
+        Path sourcePath = SlicerConstants.YAML_TEMPLATE_LOCATION;
+        Path destinationDir = SlicerConstants.GENERATED_RESOURCES_LOCATION;
+        Path destinationPath = SlicerConstants.GENERATED_YAML_LOCATION;
+        SlicerIO.checkDirectory(destinationDir);
+        SlicerIO.copyFile(sourcePath, destinationPath);
         addYamlValues(destinationPath, slice);
     }
 
     private void addYamlValues(Path destinationPath, Slice slice){
-        SlicerUtils.fillTemplate(destinationPath, "%%DATASOURCE_PORT%%", slice.getDatasource().getPort());
-        SlicerUtils.fillTemplate(destinationPath, "%%DATASOURCE_HOST%%", slice.getDatasource().getHost());
-        SlicerUtils.fillTemplate(destinationPath, "%%DATASOURCE_DATABASE_NAME%%", slice.getDatasource().getDatabase());
-        SlicerUtils.fillTemplate(destinationPath, "%%DATASOURCE_URL%%", slice.getDatasource().getUrl());
-        SlicerUtils.fillTemplate(destinationPath, "%%DATASOURCE_USERNAME%%", slice.getDatasource().getUsername());
-        SlicerUtils.fillTemplate(destinationPath, "%%DATASOURCE_PASSWORD%%", slice.getDatasource().getPassword());
-        SlicerUtils.fillTemplate(destinationPath, "%%APPLICATION_NAME%%", slice.getName());
-        SlicerUtils.fillTemplate(destinationPath, "%%APPLICATION_DESCRIPTION%%", slice.getDescription());
+        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_PORT%%", slice.getDatasource().getPort());
+        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_HOST%%", slice.getDatasource().getHost());
+        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_DATABASE_NAME%%", slice.getDatasource().getDatabase());
+        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_URL%%", slice.getDatasource().getUrl());
+        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_USERNAME%%", slice.getDatasource().getUsername());
+        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_PASSWORD%%", slice.getDatasource().getPassword());
+        SlicerIO.fillTemplate(destinationPath, "%%APPLICATION_NAME%%", slice.getName());
+        SlicerIO.fillTemplate(destinationPath, "%%APPLICATION_DESCRIPTION%%", slice.getDescription());
         String fqdn = slice.getName().toLowerCase() + "." + slice.getControllers().get(0).getName();
-        SlicerUtils.fillTemplate(destinationPath, "%%APPLICATION_CONTROLLER_FQDN%%", fqdn );
+        SlicerIO.fillTemplate(destinationPath, "%%APPLICATION_CONTROLLER_FQDN%%", fqdn );
     }
 
     private void writeTestClassToFile(Slice slice, String classname) {
@@ -127,7 +127,7 @@ public class SlicerService {
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "test", "java", packagename.toLowerCase());
             File file = new File(path.toString() + "/" + classname + "Test.java");
-            SlicerUtils.writeFile(path, file, SlicerUtils.buildTestClass(classname, packagename.toLowerCase()));
+            SlicerIO.writeFile(path, file, SlicerCodeGenUtils.buildTestClass(classname, packagename.toLowerCase()));
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write test class file for "+ classname + "Test. Reason: " + e.getMessage());
             e.printStackTrace();
@@ -140,7 +140,7 @@ public class SlicerService {
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "main", "java", packagename.toLowerCase());
             File file = new File(path.toString() + "/" + classname + ".java");
-            SlicerUtils.writeFile(path, file, w.toFile(slice));
+            SlicerIO.writeFile(path, file, w.toFile(slice));
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write class file for "+ classname + ". Reason: " + e.getMessage());
             e.printStackTrace();

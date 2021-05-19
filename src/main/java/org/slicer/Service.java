@@ -20,7 +20,7 @@ public class Service implements Writeable {
 
     public String toFile(Slice slice){
         StringBuilder sb = new StringBuilder();
-        sb.append(SlicerUtils.buildPackage(slice.getName()));
+        sb.append(SlicerCodeGenUtils.buildPackage(slice.getName()));
         sb.append("import org.springframework.stereotype.Service;\n");
         if(services != null || repositories != null){
             sb.append("import org.springframework.beans.factory.annotation.Autowired;\n");
@@ -31,8 +31,8 @@ public class Service implements Writeable {
         sb.append(name);
         sb.append(" {\n");
         sb.append("\n");
-        if(services != null) this.services.forEach(s -> sb.append(SlicerUtils.buildAutowired(s.getName())));
-        if(repositories != null) this.repositories.forEach(r -> sb.append(SlicerUtils.buildAutowired(r.getName())));
+        if(services != null) this.services.forEach(s -> sb.append(SlicerCodeGenUtils.buildAutowired(s.getName())));
+        if(repositories != null) this.repositories.forEach(r -> sb.append(SlicerCodeGenUtils.buildAutowired(r.getName())));
         sb.append("}");
         return sb.toString();
     }
