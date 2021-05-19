@@ -6,8 +6,8 @@
             <Services>
                 <Service name="AccountService">
                     <Services>
-                        <Service name="Validator"/>
-                        <Service name="EventTracker"/>
+                        <Service name="ValidatorService"/>
+                        <Service name="EventTrackerService"/>
                     </Services>
                     <Repositories>
                         <Repository name="AccountRepository"/>
@@ -15,8 +15,8 @@
                 </Service>
                 <Service name="OnboardingService">
                     <Services>
-                        <Service name="Validator"/>
-                        <Service name="Emailer"/>
+                        <Service name="ValidatorService"/>
+                        <Service name="EmailService"/>
                     </Services>
                     <Repositories>
                         <Repository name="OnboardingRepository"/>
@@ -45,15 +45,7 @@
                     <ResponseCode>200</ResponseCode>
                     <ResponseType>Slice</ResponseType>
                 </Endpoint>
-                <Endpoint name="editAccount" method="PUT" uri="/accounts/{region}/{department}">
-                    <PathVariables>
-                        <PathVariable name="department" type="String"/>
-                        <PathVariable name="region" type="String"/>
-                    </PathVariables>
-                    <RequestBody name="slice" type="Slice"/>
-                    <ResponseCode>200</ResponseCode>
-                    <ResponseType>Slice</ResponseType>
-                </Endpoint>
+                <Endpoint name="editAccount" method="PUT" uri="/accounts/{region}/{department}"/>
             </Endpoints>
         </Controller>
     </Controllers>

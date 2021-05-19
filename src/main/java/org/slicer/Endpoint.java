@@ -41,7 +41,7 @@ public class Endpoint implements Writeable {
             sb.append(this.buildApiResponse());
         }
         sb.append(this.buildApiOperation());
-        sb.append(this.buildMethodSignature());
+        sb.append(this.buildMethodSignature(slice));
         return sb.toString();
     }
 
@@ -97,18 +97,36 @@ public class Endpoint implements Writeable {
         return sb.toString();
     }
 
-    private String buildMethodSignature(){
+    private String buildMethodSignature(Slice slice){
         StringBuilder sb = new StringBuilder();
-        sb.append("    ");
-        sb.append("public ResponseEntity<");
-        sb.append(this.responseType);
-        sb.append("> ");
+        sb.append("    public ");
+        if(slice.getType() != null && slice.getType().equals("spring-webflux")){
+            sb.append("Mono<");
+            if (this.responseType == null){
+                sb.append("Void");
+                sb.append("> ");
+            } else {
+                sb.append("ResponseEntity<");
+                sb.append(this.responseType);
+                sb.append(">> ");
+            }
+        } else if (slice.getType() != null && slice.getType().equals("spring-web")){
+            sb.append("ResponseEntity<");
+            if (this.responseType != null) {
+                sb.append(this.responseType);
+            }
+            sb.append("> ");
+        }
         sb.append(this.name);
         sb.append("(");
         if(this.getRequestBody() !=null) sb.append(this.buildRequestBody());
         sb.append(this.buildRequestParams());
         sb.append(this.buildPathVariables());
-        sb.replace(sb.lastIndexOf(", "), sb.length()-1, ") {\n");
+        if(sb.lastIndexOf(", ") > 0) {
+            sb.replace(sb.lastIndexOf(", "), sb.length() - 1, ") {\n");
+        } else {
+            sb.append(") {\n");
+        }
         sb.append("        return null;\n");
         sb.append("    }");
         return sb.toString();
@@ -126,11 +144,16 @@ public class Endpoint implements Writeable {
 
     private String buildApiOperation(){
         StringBuilder sb = new StringBuilder();
-        sb.append("    @ApiOperation(value = ");
-        sb.append("\"Rest Method\",\n");
-        sb.append("      response = ");
-        sb.append(this.responseType);
-        sb.append(".class)\n");
+        sb.append("    @ApiOperation(value = \"");
+        sb.append(this.name);
+        sb.append("\"");
+        if(this.responseType != null ){
+            sb.append(",\n");
+            sb.append("      response = ");
+            sb.append(this.responseType);
+            sb.append(".class");
+        }
+        sb.append(")\n");
         return sb.toString();
     }
 

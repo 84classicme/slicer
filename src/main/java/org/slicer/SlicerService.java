@@ -38,6 +38,7 @@ public class SlicerService {
                 });
                 service.getRepositories().forEach(repository -> {
                     this.writeSourceClassToFile(slice, repository, repository.getName());
+                    this.writeTestClassToFile(slice, repository.getName());
                 });
             });
         });
