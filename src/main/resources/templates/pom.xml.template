@@ -33,7 +33,7 @@
         </repository>
     </repositories>
 
-    %%SPRING_DATA_DEPENDENCY_MGMT%%
+    %%MAVEN_DEPENDENCY_MGMT%%
 
     <dependencies>
         %%CORE_APPLICATION_DEPENDENCIES%%
@@ -61,13 +61,6 @@
 
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+    %%BUILD_CONFIGURATION%%
 
 </project>

@@ -1,11 +1,5 @@
 spring:
-    datasource:
-        port: %%DATASOURCE_PORT%%
-        host: %%DATASOURCE_HOST%%
-        database: %%DATASOURCE_DATABASE_NAME%%
-        url: %%DATASOURCE_URL%%
-        username: %%DATASOURCE_USERNAME%%
-        password: %%DATASOURCE_PASSWORD%%
+    %%DATASOURCE_TEMPLATE%%
 app:
   name: %%APPLICATION_NAME%%
   api:

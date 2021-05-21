@@ -83,15 +83,20 @@ public class SlicerService {
             switch (slice.getType()) {
                 case ("spring-web"):
                     SlicerIO.fillTemplate(destinationPath, "%%CORE_APPLICATION_DEPENDENCIES%%", SlicerConstants.SPRING_STARTER_WEB_DEPENDENCY);
+                    SlicerIO.fillTemplate(destinationPath, "%%BUILD_CONFIGURATION%%", SlicerConstants.SPRING_BUILD_CONFIGURATION);
                     break;
                 case ("spring-webflux"):
                     SlicerIO.fillTemplate(destinationPath, "%%CORE_APPLICATION_DEPENDENCIES%%", SlicerConstants.SPRING_STARTER_WEBFLUX_DEPENDENCY);
+                    SlicerIO.fillTemplate(destinationPath, "%%BUILD_CONFIGURATION%%", SlicerConstants.SPRING_BUILD_CONFIGURATION);
                     break;
             }
         }
         if (slice.getDatasource() != null) {
-            SlicerIO.fillTemplate(destinationPath, "%%SPRING_DATA_DEPENDENCY_MGMT%%", slice.getDatasource().getDependencyManager());
+            SlicerIO.fillTemplate(destinationPath, "%%MAVEN_DEPENDENCY_MGMT%%", slice.getDatasource().getDependencyManager());
             SlicerIO.fillTemplate(destinationPath, "%%DATABASE_DRIVER_DEPENDENCY%%", slice.getDatasource().getDependencies());
+        } else {
+            SlicerIO.fillTemplate(destinationPath, "%%MAVEN_DEPENDENCY_MGMT%%", "");
+            SlicerIO.fillTemplate(destinationPath, "%%DATABASE_DRIVER_DEPENDENCY%%", "");
         }
     }
 
@@ -109,12 +114,17 @@ public class SlicerService {
     }
 
     private void addYamlValues(Path destinationPath, Slice slice){
-        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_PORT%%", slice.getDatasource().getPort());
-        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_HOST%%", slice.getDatasource().getHost());
-        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_DATABASE_NAME%%", slice.getDatasource().getDatabase());
-        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_URL%%", slice.getDatasource().getUrl());
-        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_USERNAME%%", slice.getDatasource().getUsername());
-        SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_PASSWORD%%", slice.getDatasource().getPassword());
+        if(slice.getDatasource() != null) {
+            SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_TEMPLATE%%", slice.getDatasource().getPort());
+            SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_PORT%%", slice.getDatasource().getPort());
+            SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_HOST%%", slice.getDatasource().getHost());
+            SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_DATABASE_NAME%%", slice.getDatasource().getDatabase());
+            SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_URL%%", slice.getDatasource().getUrl());
+            SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_USERNAME%%", slice.getDatasource().getUsername());
+            SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_PASSWORD%%", slice.getDatasource().getPassword());
+        } else {
+            SlicerIO.fillTemplate(destinationPath, "%%DATASOURCE_TEMPLATE%%", "");
+        }
         SlicerIO.fillTemplate(destinationPath, "%%APPLICATION_NAME%%", slice.getName());
         SlicerIO.fillTemplate(destinationPath, "%%APPLICATION_DESCRIPTION%%", slice.getDescription());
         String fqdn = slice.getName().toLowerCase() + "." + slice.getControllers().get(0).getName();
