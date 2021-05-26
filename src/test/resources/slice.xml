@@ -14,13 +14,6 @@
                     </Repositories>
                 </Service>
                 <Service name="OnboardingService">
-                    <Services>
-                        <Service name="ValidatorService"/>
-                        <Service name="EmailService"/>
-                    </Services>
-                    <Repositories>
-                        <Repository name="OnboardingRepository"/>
-                    </Repositories>
                 </Service>
             </Services>
             <Endpoints>
@@ -29,7 +22,7 @@
                     <ResponseCode>202</ResponseCode>
                     <ResponseType>Slice</ResponseType>
                 </Endpoint>
-                <Endpoint name="getAccount" method="GET" uri="/accounts/{region}/{department}">
+                 <Endpoint name="getAccount" method="GET" uri="/accounts/{region}/{department}">
                     <PathVariables>
                         <PathVariable name="department" type="String"/>
                         <PathVariable name="region" type="String"/>
@@ -37,15 +30,6 @@
                     <ResponseCode>200</ResponseCode>
                     <ResponseType>Slice</ResponseType>
                 </Endpoint>
-                <Endpoint name="getAccounts" method="GET" uri="/accounts/search">
-                    <RequestParams>
-                        <RequestParam name="lastname" type="String"/>
-                        <RequestParam name="state" type="String"/>
-                    </RequestParams>
-                    <ResponseCode>200</ResponseCode>
-                    <ResponseType>Slice</ResponseType>
-                </Endpoint>
-                <Endpoint name="editAccount" method="PUT" uri="/accounts/{region}/{department}"/>
             </Endpoints>
         </Controller>
     </Controllers>

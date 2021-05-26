@@ -13,6 +13,35 @@ public class SlicerCodeGenUtils {
         return sb.toString();
     }
 
+    public static String buildMember(String name){
+        StringBuilder sb = new StringBuilder();
+        sb.append(name);
+        sb.append(" ");
+        sb.append(name.substring(0, 1).toLowerCase() + name.substring(1));
+        sb.append(";\n");
+        return sb.toString();
+    }
+
+    public static String buildConstructorParam(String name){
+        StringBuilder sb = new StringBuilder();
+        sb.append(name);
+        sb.append(" ");
+        sb.append(name.substring(0, 1).toLowerCase() + name.substring(1));
+        sb.append(", ");
+        return sb.toString();
+    }
+
+    public static String buildConstructorAssignment(String name){
+        name = name.substring(0, 1).toLowerCase() + name.substring(1);
+        StringBuilder sb = new StringBuilder();
+        sb.append("        this.");
+        sb.append(name);
+        sb.append(" = ");
+        sb.append(name);
+        sb.append(";\n");
+        return sb.toString();
+    }
+
     public static String buildTestClass(String name, String packagename){
         StringBuilder sb = new StringBuilder();
         sb.append(buildPackage(packagename));
@@ -31,7 +60,7 @@ public class SlicerCodeGenUtils {
         StringBuilder sb = new StringBuilder();
         sb.append("package ");
         sb.append(packagename.toLowerCase());
-        sb.append(";\n\n");
+        sb.append(";\n");
         return sb.toString();
     }
 

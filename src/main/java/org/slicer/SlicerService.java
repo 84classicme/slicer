@@ -32,14 +32,18 @@ public class SlicerService {
             controller.getServices().forEach(service -> {
                 this.writeSourceClassToFile(slice, service, service.getName());
                 this.writeTestClassToFile(slice, service.getName());
-                service.getServices().forEach(autowired -> {
-                    this.writeSourceClassToFile(slice, autowired, autowired.getName());
-                    this.writeTestClassToFile(slice, autowired.getName());
-                });
-                service.getRepositories().forEach(repository -> {
-                    this.writeSourceClassToFile(slice, repository, repository.getName());
-                    this.writeTestClassToFile(slice, repository.getName());
-                });
+                if (service.getServices() != null) {
+                    service.getServices().forEach(autowired -> {
+                        this.writeSourceClassToFile(slice, autowired, autowired.getName());
+                        this.writeTestClassToFile(slice, autowired.getName());
+                    });
+                }
+                if (service.getRepositories() != null) {
+                    service.getRepositories().forEach(repository -> {
+                        this.writeSourceClassToFile(slice, repository, repository.getName());
+                        this.writeTestClassToFile(slice, repository.getName());
+                    });
+                }
             });
         });
     }
