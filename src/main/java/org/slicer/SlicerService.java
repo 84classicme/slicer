@@ -1,10 +1,14 @@
 package org.slicer;
 
 import org.springframework.stereotype.Service;
+import reactor.util.function.Tuple2;
+import reactor.util.function.Tuples;
 
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SlicerService {
@@ -28,24 +32,35 @@ public class SlicerService {
         createSwaggerConfigClass(packagename);
         slice.getControllers().forEach(controller -> {
             this.writeSourceClassToFile(slice, controller, controller.getName());
-            this.writeTestClassToFile(slice, controller.getName());
-            controller.getServices().forEach(service -> {
-                this.writeSourceClassToFile(slice, service, service.getName());
-                this.writeTestClassToFile(slice, service.getName());
-                if (service.getServices() != null) {
-                    service.getServices().forEach(autowired -> {
-                        this.writeSourceClassToFile(slice, autowired, autowired.getName());
-                        this.writeTestClassToFile(slice, autowired.getName());
-                    });
-                }
-                if (service.getRepositories() != null) {
-                    service.getRepositories().forEach(repository -> {
-                        this.writeSourceClassToFile(slice, repository, repository.getName());
-                        this.writeTestClassToFile(slice, repository.getName());
-                    });
-                }
-            });
+            this.writeTestClassToFile(slice, controller.getName(), null);
+            if(controller.getServices() != null) {
+                controller.getServices().forEach(service -> {
+                    Tuple2<List<org.slicer.Service>,List<Repository>> deps = buildTuple2(service.getServices(), service.getRepositories());
+                    this.writeSourceClassToFile(slice, service, service.getName());
+                    this.writeTestClassToFile(slice, service.getName(), deps);
+
+                    if (service.getServices() != null) {
+                        service.getServices().forEach(autowired -> {
+                            this.writeSourceClassToFile(slice, autowired, autowired.getName());
+                            this.writeTestClassToFile(slice, autowired.getName(), deps);
+                        });
+                    }
+
+                    if (service.getRepositories() != null) {
+                        service.getRepositories().forEach(repository -> {
+                            this.writeSourceClassToFile(slice, repository, repository.getName());
+                            this.writeTestClassToFile(slice, repository.getName(), deps);
+                        });
+                    }
+                });
+            }
         });
+    }
+
+    private static Tuple2<List<org.slicer.Service>,List<Repository>> buildTuple2(List<org.slicer.Service> services, List<Repository> repositories){
+        if (services == null) services = new ArrayList<>();
+        if(repositories == null) repositories = new ArrayList<>();
+        return Tuples.of(services, repositories);
     }
 
     private void createApplicationClass(String packagename){
@@ -135,13 +150,17 @@ public class SlicerService {
         SlicerIO.fillTemplate(destinationPath, "%%APPLICATION_CONTROLLER_FQDN%%", fqdn );
     }
 
-    private void writeTestClassToFile(Slice slice, String classname) {
+    private void writeTestClassToFile(Slice slice, String classname, Tuple2 deps) {
         String packagename = slice.getName();
         System.out.println("Writing test class file: " + classname + "Test.java");
         try {
             Path path = FileSystems.getDefault().getPath("src", "main", "resources", "generated", "src", "test", "java", packagename.toLowerCase());
             File file = new File(path.toString() + "/" + classname + "Test.java");
-            SlicerIO.writeFile(path, file, SlicerCodeGenUtils.buildTestClass(classname, packagename.toLowerCase()));
+            if (deps == null) {
+                SlicerIO.writeFile(path, file, SlicerCodeGenUtils.buildTestClass(classname, packagename.toLowerCase()));
+            } else {
+                SlicerIO.writeFile(path, file, SlicerCodeGenUtils.buildTestClass(classname, packagename.toLowerCase(), deps));
+            }
         } catch (Exception e){
             System.err.println("EXCEPTION: Cannot write test class file for "+ classname + "Test. Reason: " + e.getMessage());
             e.printStackTrace();
